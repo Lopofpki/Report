@@ -133,9 +133,9 @@ td input,td select{font-size:12px;padding:7px;min-width:75px}
 // ========================================
 
 const PART_INFO = {
-    customer: "AIMX",
-    partNo: "P181595028",
-    process: "1/1"
+    customer: "TSI",
+    partNo: "DIE-001",
+    process: "Progressive"
 };
 
 
@@ -394,9 +394,8 @@ function updateDuration(row) {
   if (!start || !end ||
       !valid24Hour(start) || !valid24Hour(end)) {
 
-    cell.textContent = "--:--";
+    cell.textContent = "--";
     return;
-
   }
 
   const [sh, sm] = start.split(":").map(Number);
@@ -407,8 +406,8 @@ function updateDuration(row) {
   // รองรับข้ามเที่ยงคืน
   if (diff < 0) diff += 1440;
 
-  cell.textContent =
-    `${String(Math.floor(diff / 60)).padStart(2, "0")}:${String(diff % 60).padStart(2, "0")}`;
+  // แสดงผลเป็นนาที
+  cell.textContent = `${diff} นาที`;
 
 }
 
