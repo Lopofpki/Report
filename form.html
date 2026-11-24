@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Report - TNC</title>
+    <title>รายงานบำรุงรักษาแม่พิมพ์ - TNC</title>
     <style>
     * {
         margin: 0;
@@ -196,11 +196,10 @@
         }
     }
 </style>
-
 </head>
 <body>
     <div class="container">
-        <h2>Die Maintenance<br> Daily Report</h2>
+        <h2>TNC THAI NIPPON COMPONENTS CO.,LTD.<br>รายงานบำรุงรักษาแม่พิมพ์ (Die Maintenance Daily Report)</h2>
 
         <table id="repairTable">
             <thead>
@@ -295,34 +294,44 @@
 
     <script>
         // คำนวณเวลารวม
-        function calculateTotalTime(inputEl) {
-            const row = inputEl.closest('.data-row');
-            const startTime = row.querySelector('.time-start').value.trim();
-            const endTime = row.querySelector('.time-end').value.trim();
-            const totalCell = row.querySelector('.total-time-cell');
 
-            const timeRegex = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/;
-            
-            if (timeRegex.test(startTime) && timeRegex.test(endTime)) {
-                const [startH, startM] = startTime.split(':').map(Number);
-                const [endH, endM] = endTime.split(':').map(Number);
-                
-                let startTotal = startH * 60 + startM;
-                let endTotal = endH * 60 + endM;
-                
-                if (endTotal < startTotal) {
-                    endTotal += 24 * 60;
-                }
-                
-                let diffMinutes = endTotal - startTotal;
-                let diffH = Math.floor(diffMinutes / 60);
-                let diffM = diffMinutes % 60;
-                
-                totalCell.textContent = `${String(diffH).padStart(2, '0')}:${String(diffM).padStart(2, '0')}`;
-            } else {
-                totalCell.textContent = '--:--';
-            }
-        }
+function calculateTotalTime(inputEl) {
+    const row = inputEl.closest('.data-row');
+    if (!row) return;
+
+    const startInput = row.querySelector('.time-start');
+    const endInput = row.querySelector('.time-end');
+    const totalCell = row.querySelector('.total-time-cell');
+
+    const startTime = startInput.value.trim();
+    const endTime = endInput.value.trim();
+
+    const timeRegex = /^([01]?\d|2[0-3]):([0-5]\d)$/;
+
+    if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
+        totalCell.textContent = '--';
+        return;
+    }
+
+    const [startH, startM] = startTime.split(':').map(Number);
+    const [endH, endM] = endTime.split(':').map(Number);
+
+    let startTotal = startH * 60 + startM;
+    let endTotal = endH * 60 + endM;
+
+    // รองรับข้ามเที่ยงคืน
+    if (endTotal < startTotal) {
+        endTotal += 1440;
+    }
+
+    const diffMinutes = endTotal - startTotal;
+
+    // แสดงผลเป็นนาที
+    totalCell.textContent = diffMinutes + ' นาที';
+}
+
+
+        
 
         // เพิ่มแถวใหม่
         function addNewRow() {
