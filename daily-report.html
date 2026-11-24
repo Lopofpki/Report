@@ -70,9 +70,31 @@ if (qrLocked) {
   notice.style.display = "block";
   notice.textContent = `🔒 QR Code ล็อกลูกค้า: ${lockedCustomer} | Part No.: ${lockedPartNo}`;
 }
+
 function valid24Hour(value) {
-  return /^(?:[01]\\d|2[0-3]):[0-5]\d$/.test(value);
+    value = value.trim();
+
+    if (value.length !== 5 || value[2] !== ":") {
+        return false;
+    }
+
+    const hourText = value.substring(0, 2);
+    const minuteText = value.substring(3, 5);
+
+    const isDigit = text =>
+        [...text].every(char => char >= "0" && char <= "9");
+
+    if (!isDigit(hourText) || !isDigit(minuteText)) {
+        return false;
+    }
+
+    const hour = Number(hourText);
+    const minute = Number(minuteText);
+
+    return hour >= 0 && hour <= 23 &&
+           minute >= 0 && minute <= 59;
 }
+
 function localISODate(d=new Date()){
   const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
   return `${y}-${m}-${day}`;
