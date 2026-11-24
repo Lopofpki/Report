@@ -1,226 +1,683 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Die Maintenance Daily Report | TNC</title>
+
 <style>
-:root{--navy:#20364d;--blue:#2878bd;--green:#219653;--bg:#f3f6fa;--line:#dce3eb;--text:#243447}
-*{box-sizing:border-box}body{margin:0;padding:18px;background:var(--bg);font-family:Arial,"Noto Sans Thai",sans-serif;color:var(--text)}
-.wrap{max-width:1600px;margin:auto}.header{background:#fff;padding:20px;border-radius:12px;box-shadow:0 3px 14px #20364d12;margin-bottom:16px}
-h1{font-size:22px;margin:0 0 6px;color:var(--navy)}.sub{color:#667788;font-size:14px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:16px}
-.field{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600}.field input{min-width:170px}
-input,select{font:inherit;border:1px solid #cbd5df;border-radius:6px;padding:9px;background:#fff;color:var(--text);min-width:0;width:100%}
+:root{
+  --navy:#20364d;
+  --blue:#2878bd;
+  --green:#219653;
+  --bg:#f3f6fa;
+  --line:#dce3eb;
+  --text:#243447
+}
+*{box-sizing:border-box}
+body{
+  margin:0;padding:18px;background:var(--bg);
+  font-family:Arial,"Noto Sans Thai",sans-serif;color:var(--text)
+}
+.wrap{max-width:1600px;margin:auto}
+.header{
+  background:#fff;padding:20px;border-radius:12px;
+  box-shadow:0 3px 14px #20364d12;margin-bottom:16px
+}
+h1{font-size:22px;margin:0 0 6px;color:var(--navy)}
+.sub{color:#667788;font-size:14px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:16px}
+.field{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600}
+.field input{min-width:170px}
+input,select{
+  font:inherit;border:1px solid #cbd5df;border-radius:6px;
+  padding:9px;background:#fff;color:var(--text);min-width:0;width:100%
+}
 input:focus,select:focus{outline:2px solid #b9dcf8;border-color:var(--blue)}
-.table-wrap{overflow:auto;background:#fff;border-radius:12px;box-shadow:0 3px 14px #20364d12}
-table{border-collapse:collapse;width:100%;min-width:1450px}th,td{border:1px solid var(--line);padding:7px;text-align:center;font-size:13px}th{background:var(--navy);color:#fff;position:sticky;top:0;z-index:1}tbody tr:nth-child(even){background:#f8fafc}tbody tr:hover{background:#eef6fd}
-td input,td select{font-size:12px;padding:7px;min-width:75px}.narrow{min-width:55px}.time{min-width:105px}.duration{font-weight:700;color:#176b3b;white-space:nowrap}.check{width:20px;height:20px;accent-color:var(--green)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.btn{border:0;border-radius:7px;padding:11px 16px;color:white;font-weight:700;cursor:pointer;background:var(--blue)}.btn:hover{filter:brightness(.94)}.green{background:var(--green)}.gray{background:#64748b}.red{background:#c0392b}.notice{font-size:12px;color:#667788;margin:8px 2px}
-@media(max-width:700px){body{padding:10px}.header{padding:15px}h1{font-size:18px}.btn{flex:1}.actions{gap:8px}}
+input[readonly]{background:#eef2f6;color:#334155}
+.table-wrap{
+  overflow:auto;background:#fff;border-radius:12px;
+  box-shadow:0 3px 14px #20364d12
+}
+table{border-collapse:collapse;width:100%;min-width:1450px}
+th,td{border:1px solid var(--line);padding:7px;text-align:center;font-size:13px}
+th{background:var(--navy);color:#fff;position:sticky;top:0;z-index:1}
+tbody tr:nth-child(even){background:#f8fafc}
+tbody tr:hover{background:#eef6fd}
+td input,td select{font-size:12px;padding:7px;min-width:75px}
+.time{min-width:105px}
+.duration{font-weight:700;color:#176b3b;white-space:nowrap}
+.check{width:20px;height:20px;accent-color:var(--green)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.btn{
+  border:0;border-radius:7px;padding:11px 16px;color:white;
+  font-weight:700;cursor:pointer;background:var(--blue)
+}
+.btn:hover{filter:brightness(.94)}
+.green{background:var(--green)}
+.gray{background:#64748b}
+.red{background:#c0392b}
+.notice{font-size:12px;color:#667788;margin:8px 2px}
+@media(max-width:700px){
+  body{padding:10px}
+  .header{padding:15px}
+  h1{font-size:18px}
+  .btn{flex:1}
+  .actions{gap:8px}
+}
 </style>
 </head>
+
 <body>
 <div class="wrap">
-  <header class="header">
-    <h1>Die Maintenance Daily Report</h1>
-    <div class="sub">TNC · แบบบันทึกรายงานการซ่อมแม่พิมพ์ประจำวัน</div>
-    <div id="qrLockNotice" class="sub" style="display:none;margin-top:10px;padding:9px 12px;border-radius:7px;background:#e8f5ec;color:#176b3b;font-weight:700"></div>
-    <div class="toolbar">
-      <label class="field">วันที่บันทึก
-<input type="text" id="reportDate"
-       placeholder="DD/MM/YY"
-       maxlength="8"
-       inputmode="numeric">      </label>
-    </div>
-  </header>
 
-  <div class="table-wrap">
-    <table id="repairTable">
-      <thead><tr>
-        <th>#</th><th>ลูกค้า</th><th>Part No.</th><th>Process</th><th>สาเหตุการซ่อม</th>
-        <th>สาเหตุการเกิดปัญหา</th><th>รายละเอียดการซ่อม</th><th>ผู้ซ่อม</th>
-        <th>เวลาเริ่ม</th><th>เวลาเสร็จ</th><th>รวมเวลา</th><th>เสร็จ</th><th>หมายเหตุ</th><th>ลบ</th>
-      </tr></thead>
-      <tbody id="tableBody"></tbody>
-    </table>
+<header class="header">
+  <h1>Die Maintenance Daily Report</h1>
+  <div class="sub">TNC · แบบบันทึกรายงานการซ่อมแม่พิมพ์ประจำวัน</div>
+
+  <div class="toolbar">
+    <label class="field">
+      วันที่บันทึก
+      <input type="text" id="reportDate"
+             placeholder="DD/MM/YY" maxlength="8"
+             inputmode="numeric">
+    </label>
   </div>
-  <p class="notice">เวลาใช้ระบบ 24 ชั่วโมง HH:MM เท่านั้น เช่น 08:30, 14:45 ไม่มี AM/PM · สแกน QR เพื่อเติมและล็อกข้อมูลลูกค้า/Part No. · รองรับงานข้ามเที่ยงคืน</p>
-  <div class="actions">
-    <button class="btn" id="addRowBtn" type="button">＋ เพิ่มรายการ</button>
-    <button class="btn green" id="saveBtn" type="button">💾 บันทึกเข้าประวัติ</button>
-    <button class="btn gray" id="historyBtn" type="button">📂 ดูประวัติ</button>
-    <button class="btn red" id="clearBtn" type="button">ล้างฟอร์ม</button>
-  </div>
+</header>
+
+<div class="table-wrap">
+<table id="repairTable">
+<thead>
+<tr>
+  <th>#</th>
+  <th>ลูกค้า</th>
+  <th>Part No.</th>
+  <th>Process</th>
+  <th>สาเหตุการซ่อม</th>
+  <th>สาเหตุการเกิดปัญหา</th>
+  <th>รายละเอียดการซ่อม</th>
+  <th>ผู้ซ่อม</th>
+  <th>เวลาเริ่ม</th>
+  <th>เวลาเสร็จ</th>
+  <th>รวมเวลา</th>
+  <th>เสร็จ</th>
+  <th>หมายเหตุ</th>
+  <th>ลบ</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
 </div>
+
+<p class="notice">
+เวลาใช้ระบบ 24 ชั่วโมง HH:MM เช่น 08:30, 14:45
+· รองรับงานข้ามเที่ยงคืน
+</p>
+
+<div class="actions">
+  <button class="btn" id="addRowBtn" type="button">＋ เพิ่มรายการ</button>
+  <button class="btn green" id="saveBtn" type="button">💾 บันทึกเข้าประวัติ</button>
+  <button class="btn gray" id="historyBtn" type="button">📂 ดูประวัติ</button>
+  <button class="btn red" id="clearBtn" type="button">ล้างฟอร์ม</button>
+</div>
+
+</div>
+
 <script>
 "use strict";
-const STORAGE_KEY = "pmHistory";
-const options = {
-  repair: ["เจาะ","กรีลิ่ว","เบี้ย","เปลี่ยนเม็ด","เปลี่ยนเม็ด+ตัด","เปลี่ยนเม็ด+ล้าง","ล้างแม่พิมพ์","ปรับระดับ","อื่นๆ"],
-  problem: ["Punch แตก","Punch เบี้ย","เม็ดสึกหรอ","น้ำมันรั่ว","สิ่งสกปรก","รอยขีดข่วน","ไม่มี","อื่นๆ"],
-  detail: ["เปลี่ยนของใหม่","ถอดล้าง+ปรับระดับ","เปลี่ยนเม็ด","ล้างทำความสะอาด","เปลี่ยนแหวนรอง","เปลี่ยนขอบพลาสติก","ปรับแรงดัน","ตรวจสอบ+ทดลองเดินเครื่อง","อื่นๆ - ระบุ"]
+
+// ========================================
+// 1. ตั้งค่าข้อมูล PART ประจำระบบ
+// แก้ข้อมูลเฉพาะตรงนี้จุดเดียว
+// ========================================
+
+const PART_INFO = {
+    customer: "TSI",
+    partNo: "DIE-001",
+    process: "Progressive"
 };
+
+
+// ========================================
+// 2. ระบบจัดเก็บข้อมูล
+// ========================================
+
+const STORAGE_KEY = "pmHistory";
+
 const tbody = document.getElementById("tableBody");
 const dateInput = document.getElementById("reportDate");
-// QR URL: daily-report.html?customer=ชื่อลูกค้า&partNo=รหัสPart
-const qrParams = new URLSearchParams(location.search);
-const lockedCustomer = qrParams.get("customer") || "";
-const lockedPartNo = qrParams.get("partNo") || "";
-const qrLocked = Boolean(lockedCustomer && lockedPartNo);
-if (qrLocked) {
-  const notice = document.getElementById("qrLockNotice");
-  notice.style.display = "block";
-  notice.textContent = `🔒 QR Code ล็อกลูกค้า: ${lockedCustomer} | Part No.: ${lockedPartNo}`;
-}
 
-function valid24Hour(value) {
-    value = value.trim();
 
-    if (value.length !== 5 || value[2] !== ":") {
-        return false;
-    }
+// ========================================
+// 3. ตัวเลือกในตาราง
+// ========================================
 
-    const hourText = value.substring(0, 2);
-    const minuteText = value.substring(3, 5);
+const options = {
+  repair: [
+    "เจาะ","กรีลิ่ว","เบี้ย","เปลี่ยนเม็ด",
+    "เปลี่ยนเม็ด+ตัด","เปลี่ยนเม็ด+ล้าง",
+    "ล้างแม่พิมพ์","ปรับระดับ","อื่นๆ"
+  ],
 
-    const isDigit = text =>
-        [...text].every(char => char >= "0" && char <= "9");
+  problem: [
+    "Punch แตก","Punch เบี้ย","เม็ดสึกหรอ",
+    "น้ำมันรั่ว","สิ่งสกปรก","รอยขีดข่วน",
+    "ไม่มี","อื่นๆ"
+  ],
 
-    if (!isDigit(hourText) || !isDigit(minuteText)) {
-        return false;
-    }
+  detail: [
+    "เปลี่ยนของใหม่","ถอดล้าง+ปรับระดับ",
+    "เปลี่ยนเม็ด","ล้างทำความสะอาด",
+    "เปลี่ยนแหวนรอง","เปลี่ยนขอบพลาสติก",
+    "ปรับแรงดัน","ตรวจสอบ+ทดลองเดินเครื่อง",
+    "อื่นๆ - ระบุ"
+  ]
+};
 
-    const hour = Number(hourText);
-    const minute = Number(minuteText);
 
-    return hour >= 0 && hour <= 23 &&
-           minute >= 0 && minute <= 59;
-}
+// ========================================
+// 4. วันที่อัตโนมัติ DD/MM/YY
+// ========================================
 
 function localISODate(d = new Date()) {
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = String(d.getFullYear()).slice(-2);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = String(d.getFullYear()).slice(-2);
 
-    return `${day}/${month}/${year}`;
+  return `${day}/${month}/${year}`;
 }
+
 dateInput.value = localISODate();
-function escapeHTML(value){
-  return String(value ?? "").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+
+// ========================================
+// 5. ป้องกัน HTML
+// ========================================
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
 }
-function selectHTML(cls,items){
-  return `<select class="${cls}"><option value="">-- เลือก --</option>${items.map(x=>`<option value="${escapeHTML(x)}">${escapeHTML(x)}</option>`).join("")}</select>`;
+
+
+// ========================================
+// 6. สร้างรายการ SELECT
+// ========================================
+
+function selectHTML(cls, items) {
+  return `
+    <select class="${cls}">
+      <option value="">-- เลือก --</option>
+      ${items.map(x =>
+        `<option value="${escapeHTML(x)}">${escapeHTML(x)}</option>`
+      ).join("")}
+    </select>
+  `;
 }
-function addRow(data={}){
-  const tr=document.createElement("tr"); tr.className="data-row";
-  tr.innerHTML=`
+
+
+// ========================================
+// 7. เติมข้อมูล PART อัตโนมัติ
+// ========================================
+
+function applyPartInfo(row) {
+
+  row.querySelector(".customer").value = PART_INFO.customer;
+
+  row.querySelector(".part-no").value = PART_INFO.partNo;
+
+  row.querySelector(".process").value = PART_INFO.process;
+
+}
+
+
+// ========================================
+// 8. เพิ่มแถวใหม่
+// ========================================
+
+function addRow(data = {}) {
+
+  const tr = document.createElement("tr");
+  tr.className = "data-row";
+
+  tr.innerHTML = `
+
     <td class="row-no"></td>
-    <td><input class="customer" type="text" placeholder="ลูกค้า"></td>
-    <td><input class="part-no" type="text" placeholder="Part No."></td>
-    <td><input class="process" type="text" placeholder="Process"></td>
-    <td>${selectHTML("cause-repair",options.repair)}</td>
-    <td>${selectHTML("cause-problem",options.problem)}</td>
-    <td>${selectHTML("repair-detail",options.detail)}</td>
-    <td><input class="repaired-by" type="text" placeholder="ชื่อ"></td>
-    <td><input class="time-start time" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM" aria-label="เวลาเริ่ม"></td>
-    <td><input class="time-end time" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM" aria-label="เวลาเสร็จ"></td>
+
+    <td>
+      <input class="customer" type="text"
+             readonly>
+    </td>
+
+    <td>
+      <input class="part-no" type="text"
+             readonly>
+    </td>
+
+    <td>
+      <input class="process" type="text"
+             readonly>
+    </td>
+
+    <td>${selectHTML("cause-repair", options.repair)}</td>
+
+    <td>${selectHTML("cause-problem", options.problem)}</td>
+
+    <td>${selectHTML("repair-detail", options.detail)}</td>
+
+    <td>
+      <input class="repaired-by" type="text" placeholder="ชื่อ">
+    </td>
+
+    <td>
+      <input class="time-start time" type="text"
+             inputmode="numeric" maxlength="5"
+             placeholder="HH:MM">
+    </td>
+
+    <td>
+      <input class="time-end time" type="text"
+             inputmode="numeric" maxlength="5"
+             placeholder="HH:MM">
+    </td>
+
     <td class="duration total-time-cell">--:--</td>
-    <td><input class="status-done check" type="checkbox" aria-label="เสร็จ"></td>
-    <td><input class="remark" type="text" placeholder="-"></td>
-    <td><button type="button" class="btn red delete-row" style="padding:6px 9px">ลบ</button></td>`;
+
+    <td>
+      <input class="status-done check" type="checkbox">
+    </td>
+
+    <td>
+      <input class="remark" type="text" placeholder="-">
+    </td>
+
+    <td>
+      <button type="button" class="btn red delete-row"
+              style="padding:6px 9px">ลบ</button>
+    </td>
+
+  `;
+
   tbody.appendChild(tr);
-  const fields={
-    ".customer":data.customer,".part-no":data.partNo,".process":data.process,
-    ".cause-repair":data.causeRepair,".cause-problem":data.causeProblem,
-    ".repair-detail":data.repairDetail,".repaired-by":data.repairedBy,
-    ".time-start":data.startTime,".time-end":data.endTime,".remark":data.remarks
+
+  // ข้อมูล Part ประจำระบบ
+  applyPartInfo(tr);
+
+  // ใส่ข้อมูลเดิมกรณีเรียกใช้งานพร้อมข้อมูล
+  const fields = {
+    ".cause-repair": data.causeRepair,
+    ".cause-problem": data.causeProblem,
+    ".repair-detail": data.repairDetail,
+    ".repaired-by": data.repairedBy,
+    ".time-start": data.startTime,
+    ".time-end": data.endTime,
+    ".remark": data.remarks
   };
-  for(const [selector,value] of Object.entries(fields)) if(value!=null) tr.querySelector(selector).value=value;
-  if (qrLocked) {
-    tr.querySelector(".customer").value = lockedCustomer;
-    tr.querySelector(".part-no").value = lockedPartNo;
-    tr.querySelector(".customer").readOnly = true;
-    tr.querySelector(".part-no").readOnly = true;
-    tr.querySelector(".customer").style.background = "#eef2f6";
-    tr.querySelector(".part-no").style.background = "#eef2f6";
+
+  for (const [selector, value] of Object.entries(fields)) {
+    if (value != null) {
+      tr.querySelector(selector).value = value;
+    }
   }
-  tr.querySelector(".status-done").checked=Boolean(data.statusDone);
-  updateDuration(tr); renumber();
+
+  tr.querySelector(".status-done").checked =
+    Boolean(data.statusDone);
+
+  updateDuration(tr);
+  renumber();
+
 }
-function renumber(){[...tbody.querySelectorAll(".data-row")].forEach((r,i)=>r.querySelector(".row-no").textContent=i+1);}
-function updateDuration(row){
-  const start=row.querySelector(".time-start").value,end=row.querySelector(".time-end").value,cell=row.querySelector(".total-time-cell");
-  if(!start||!end){cell.textContent="--:--";return;}
-  const [sh,sm]=start.split(":").map(Number),[eh,em]=end.split(":").map(Number);
-  let diff=(eh*60+em)-(sh*60+sm); if(diff<0)diff+=1440;
-  cell.textContent=`${String(Math.floor(diff/60)).padStart(2,"0")}:${String(diff%60).padStart(2,"0")}`;
+
+
+// ========================================
+// 9. เรียงเลขลำดับ
+// ========================================
+
+function renumber() {
+
+  [...tbody.querySelectorAll(".data-row")].forEach((row, i) => {
+
+    row.querySelector(".row-no").textContent = i + 1;
+
+  });
+
 }
-tbody.addEventListener("input",e=>{
-  if(e.target.matches(".time-start,.time-end")) {
-    const el=e.target;
-    const digits=el.value.replace(/[^0-9]/g,"").slice(0,4);
-    el.value=digits.length>2?digits.slice(0,2)+":"+digits.slice(2):digits;
-    updateDuration(el.closest("tr"));
+
+
+// ========================================
+// 10. ตรวจสอบเวลา
+// ========================================
+
+function valid24Hour(value) {
+
+  value = value.trim();
+
+  if (value.length !== 5 || value[2] !== ":") {
+    return false;
   }
-});
-tbody.addEventListener("change",e=>{if(e.target.matches(".time-start,.time-end"))updateDuration(e.target.closest("tr"));});
-tbody.addEventListener("click",e=>{
-  const btn=e.target.closest(".delete-row"); if(!btn)return;
-  const rows=tbody.querySelectorAll(".data-row");
-  if(rows.length===1){clearRow(rows[0]);return;}
-  btn.closest("tr").remove();renumber();
-});
-function clearRow(row){
-  row.querySelectorAll("input").forEach(el=>{if(el.type==="checkbox")el.checked=false;else el.value="";});
-  if(qrLocked){row.querySelector(".customer").value=lockedCustomer;row.querySelector(".part-no").value=lockedPartNo;}
-  row.querySelectorAll("select").forEach(el=>el.value="");
-  row.querySelector(".total-time-cell").textContent="--:--";
+
+  const hourText = value.substring(0, 2);
+  const minuteText = value.substring(3, 5);
+
+  const isDigit = text =>
+    [...text].every(char => char >= "0" && char <= "9");
+
+  if (!isDigit(hourText) || !isDigit(minuteText)) {
+    return false;
+  }
+
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+
+  return hour >= 0 && hour <= 23 &&
+         minute >= 0 && minute <= 59;
 }
-function getRecords(){
-  return [...tbody.querySelectorAll(".data-row")].map((row,index)=>{
-    const get=s=>row.querySelector(s).value.trim();
-    const record={
-      id:`${Date.now()}-${index}-${Math.random().toString(36).slice(2,7)}`,
-      savedDate:dateInput.value,checkDate:dateInput.value,
-      customer:get(".customer"),partNo:get(".part-no"),process:get(".process"),
-      causeRepair:get(".cause-repair"),causeProblem:get(".cause-problem"),
-      repairDetail:get(".repair-detail"),repairedBy:get(".repaired-by"),
-      startTime:get(".time-start"),endTime:get(".time-end"),
-      workDuration:row.querySelector(".total-time-cell").textContent,
-      statusDone:row.querySelector(".status-done").checked,remarks:get(".remark")
-    };
-    return record;
-  }).filter(r=>Object.entries(r).some(([k,v])=>!["id","savedDate","checkDate","workDuration","statusDone"].includes(k)&&v!=="")||r.statusDone);
-}
-function readHistory(){
-  try{const parsed=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");return Array.isArray(parsed)?parsed:[];}
-  catch(err){alert("ข้อมูลประวัติเดิมอ่านไม่ได้ ระบบจะไม่เขียนทับข้อมูลเดิม กรุณาสำรองข้อมูลก่อน");throw err;}
-}
-function saveData(){
-  const invalidTime = [...tbody.querySelectorAll(".data-row")].find(row =>
-    [row.querySelector(".time-start").value.trim(), row.querySelector(".time-end").value.trim()]
-      .some(value => value !== "" && !valid24Hour(value))
-  );
-  if (invalidTime) {
-    alert("กรุณากรอกเวลาแบบ 24 ชั่วโมง HH:MM เช่น 08:30 หรือ 14:45");
+
+
+// ========================================
+// 11. คำนวณเวลาซ่อม
+// ========================================
+
+function updateDuration(row) {
+
+  const start = row.querySelector(".time-start").value;
+  const end = row.querySelector(".time-end").value;
+
+  const cell = row.querySelector(".total-time-cell");
+
+  if (!start || !end ||
+      !valid24Hour(start) || !valid24Hour(end)) {
+
+    cell.textContent = "--:--";
     return;
+
   }
-  const records=getRecords();
-  if(!records.length){alert("ยังไม่มีข้อมูล กรุณากรอกข้อมูลก่อนบันทึก");return;}
-  try{
-    const existing=readHistory();
-    localStorage.setItem(STORAGE_KEY,JSON.stringify(existing.concat(records)));
-    alert(`บันทึกเรียบร้อย ${records.length} รายการ`);
-    tbody.innerHTML="";addRow();
-  }catch(err){if(err.name==="QuotaExceededError")alert("พื้นที่จัดเก็บของเบราว์เซอร์เต็ม กรุณาส่งออก/ลบประวัติบางส่วน");else console.error(err);}
+
+  const [sh, sm] = start.split(":").map(Number);
+  const [eh, em] = end.split(":").map(Number);
+
+  let diff = (eh * 60 + em) - (sh * 60 + sm);
+
+  // รองรับข้ามเที่ยงคืน
+  if (diff < 0) diff += 1440;
+
+  cell.textContent =
+    `${String(Math.floor(diff / 60)).padStart(2, "0")}:${String(diff % 60).padStart(2, "0")}`;
+
 }
-document.getElementById("addRowBtn").addEventListener("click",()=>addRow());
-document.getElementById("saveBtn").addEventListener("click",saveData);
-document.getElementById("historyBtn").addEventListener("click",()=>location.href="history.html");
-document.getElementById("clearBtn").addEventListener("click",()=>{
-  if(confirm("ต้องการล้างข้อมูลทั้งหมดในฟอร์มใช่หรือไม่?")){tbody.innerHTML="";addRow();}
+
+
+// ========================================
+// 12. จัดรูปแบบเวลาอัตโนมัติ
+// ========================================
+
+tbody.addEventListener("input", e => {
+
+  if (e.target.matches(".time-start,.time-end")) {
+
+    const el = e.target;
+
+    const digits = el.value.replace(/[^0-9]/g, "").slice(0, 4);
+
+    el.value = digits.length > 2
+      ? digits.slice(0, 2) + ":" + digits.slice(2)
+      : digits;
+
+    updateDuration(el.closest("tr"));
+
+  }
+
 });
+
+
+// ========================================
+// 13. ลบแถว
+// ========================================
+
+tbody.addEventListener("click", e => {
+
+  const btn = e.target.closest(".delete-row");
+
+  if (!btn) return;
+
+  const rows = tbody.querySelectorAll(".data-row");
+
+  if (rows.length === 1) {
+
+    clearRow(rows[0]);
+    return;
+
+  }
+
+  btn.closest("tr").remove();
+
+  renumber();
+
+});
+
+
+// ========================================
+// 14. ล้างข้อมูลในแถว
+// ========================================
+
+function clearRow(row) {
+
+  row.querySelectorAll("input").forEach(el => {
+
+    if (el.type === "checkbox") {
+      el.checked = false;
+    } else {
+      el.value = "";
+    }
+
+  });
+
+  row.querySelectorAll("select").forEach(el => {
+    el.value = "";
+  });
+
+  // เติมข้อมูล PART กลับมาเสมอ
+  applyPartInfo(row);
+
+  row.querySelector(".total-time-cell").textContent = "--:--";
+
+}
+
+
+// ========================================
+// 15. รวบรวมข้อมูล
+// ========================================
+
+function getRecords() {
+
+  return [...tbody.querySelectorAll(".data-row")].map((row, index) => {
+
+    const get = selector =>
+      row.querySelector(selector).value.trim();
+
+    const record = {
+
+      id: `${Date.now()}-${index}-${Math.random().toString(36).slice(2,7)}`,
+
+      savedDate: dateInput.value,
+      checkDate: dateInput.value,
+
+      customer: PART_INFO.customer,
+      partNo: PART_INFO.partNo,
+      process: PART_INFO.process,
+
+      causeRepair: get(".cause-repair"),
+      causeProblem: get(".cause-problem"),
+      repairDetail: get(".repair-detail"),
+
+      repairedBy: get(".repaired-by"),
+
+      startTime: get(".time-start"),
+      endTime: get(".time-end"),
+
+      workDuration: row.querySelector(".total-time-cell").textContent,
+
+      statusDone: row.querySelector(".status-done").checked,
+
+      remarks: get(".remark")
+
+    };
+
+    return record;
+
+  }).filter(r => {
+
+    // ไม่นับแถวว่างที่มีข้อมูล PART อัตโนมัติอย่างเดียว
+    return Boolean(
+      r.causeRepair ||
+      r.causeProblem ||
+      r.repairDetail ||
+      r.repairedBy ||
+      r.startTime ||
+      r.endTime ||
+      r.statusDone ||
+      r.remarks
+    );
+
+  });
+
+}
+
+
+// ========================================
+// 16. อ่านประวัติ
+// ========================================
+
+function readHistory() {
+
+  try {
+
+    const parsed = JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || "[]"
+    );
+
+    return Array.isArray(parsed) ? parsed : [];
+
+  } catch (err) {
+
+    alert("ข้อมูลประวัติเดิมอ่านไม่ได้ กรุณาสำรองข้อมูลก่อน");
+
+    throw err;
+
+  }
+
+}
+
+
+// ========================================
+// 17. บันทึกประวัติ
+// ========================================
+
+function saveData() {
+
+  const rows = [...tbody.querySelectorAll(".data-row")];
+
+  const invalidTime = rows.find(row =>
+
+    [
+      row.querySelector(".time-start").value.trim(),
+      row.querySelector(".time-end").value.trim()
+
+    ].some(value => value !== "" && !valid24Hour(value))
+
+  );
+
+  if (invalidTime) {
+
+    alert("กรุณากรอกเวลาแบบ 24 ชั่วโมง HH:MM เช่น 08:30 หรือ 14:45");
+
+    return;
+
+  }
+
+  const records = getRecords();
+
+  if (!records.length) {
+
+    alert("ยังไม่มีข้อมูล กรุณากรอกข้อมูลก่อนบันทึก");
+
+    return;
+
+  }
+
+  try {
+
+    const existing = readHistory();
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(existing.concat(records))
+    );
+
+    alert(`บันทึกเรียบร้อย ${records.length} รายการ`);
+
+    tbody.innerHTML = "";
+
+    addRow();
+
+  } catch (err) {
+
+    if (err.name === "QuotaExceededError") {
+
+      alert("พื้นที่จัดเก็บของเบราว์เซอร์เต็ม กรุณาสำรองข้อมูล");
+
+    } else {
+
+      console.error(err);
+
+    }
+
+  }
+
+}
+
+
+// ========================================
+// 18. ปุ่มควบคุม
+// ========================================
+
+document.getElementById("addRowBtn")
+  .addEventListener("click", () => addRow());
+
+document.getElementById("saveBtn")
+  .addEventListener("click", saveData);
+
+document.getElementById("historyBtn")
+  .addEventListener("click", () => {
+    location.href = "history.html";
+  });
+
+document.getElementById("clearBtn")
+  .addEventListener("click", () => {
+
+    if (confirm("ต้องการล้างข้อมูลทั้งหมดในฟอร์มใช่หรือไม่?")) {
+
+      tbody.innerHTML = "";
+
+      addRow();
+
+    }
+
+  });
+
+
+// ========================================
+// 19. เริ่มต้นระบบ
+// ========================================
+
 addRow();
+
 </script>
 </body>
 </html>
