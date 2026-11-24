@@ -230,54 +230,46 @@
 
     // ส่งออกเป็น CSV (เปิดใน Excel ได้เลย)
         // ส่งออกเป็น CSV ตามรูปแบบบริษัท
-    function exportToCSV() {
-        if (allRecords.length === 0) { alert('ไม่มีข้อมูลที่จะส่งออก'); return; }
+        function exportToCSV() {
+        if (allRecords.length === 0) { 
+            alert('ไม่มีข้อมูลที่จะส่งออก'); 
+            return; 
+        }
         
         let csv = '\uFEFF'; // UTF-8 BOM ให้ภาษาไทยแสดงถูกใน Excel
         
         // หัวคอลัมน์ ตามรูปแบบของคุณ
         const headers = [
-            'Date',
-            'Customer',
+            'วันที่',
+            'ลูกค้า',
             'Part No.',
-            'ประเภทของการซ่อม',
-            'สถานที่ซ่อม',
-            'สาเหตุ',
-            'M/C',
-            'Die Step',
-            'Repair of cause',
-            'สถานะ',
-            'Cause of problem',
-            'Details of repair',
-            'เวลาซ่อม_เริ่ม',
-            'เวลาซ่อม_เสร็จ',
-            'เวลารวมซ่อม',
-            'ซ่อมโดย'
+            'กระบวนการ',
+            'สาเหตุการซ่อม',
+            'สาเหตุปัญหา',
+            'รายละเอียดการซ่อม',
+            'ผู้ซ่อม',
+            'เวลาเริ่ม',
+            'เวลาเสร็จ',
+            'เวลารวม',
+            'หมายเหตุ'
         ];
         csv += headers.join(',') + '\n';
         
-        // ข้อมูลแต่ละแถว
+        // ข้อมูลแต่ละแถว — ใช้ชื่อฟิลด์ที่ตรงกับ form.html
         allRecords.forEach(r => {
             const row = [
-                `"${r.checkDate || ''}"`,
+                `"${r.savedDate || ''}"`,
                 `"${r.customer || ''}"`,
                 `"${r.partNo || ''}"`,
-                // ประเภทของการซ่อม
-                `"${(r.pmPlan ? 'PM ตาม Plan' : '')}${(r.pmPlan && r.pmTool ? ' / ' : '')}${(r.pmTool ? 'PM ตาม Tool life' : '')}"`,
-                // สถานที่ซ่อม — แสดงชนิดแม่พิมพ์
-                `"${(r.dieProg ? 'Progressive Die' : '')}${(r.dieProg && r.dieSinger ? ' / ' : '')}${(r.dieSinger ? 'Singer Die' : '')}${((r.dieProg || r.dieSinger) && r.dieComp ? ' / ' : '')}${(r.dieComp ? 'Compound Die' : '')}"`,
-                // สาเหตุ — แสดงประเภทแม่พิมพ์
-                `"${r.plateNew ? 'แม่พิมพ์ใหม่' : ''}${r.plateNew && r.plateOld ? ' / ' : ''}${r.plateOld ? 'แม่พิมพ์เก่า' : ''}"`,
                 `"${r.process || ''}"`,
-                `"${r.passedShots || ''}"`,
-                `"${''}"`, // Repair of cause — เพิ่มเองได้ถ้ามี
-                `"${''}"`, // สถานะ — เพิ่มเองได้ถ้ามี
-                `"${''}"`, // Cause of problem — เพิ่มเองได้ถ้ามี
-                `"${(r.remarks || '').replace(/"/g, '""')}"`,
+                `"${r.causeRepair || ''}"`,
+                `"${r.causeProblem || ''}"`,
+                `"${(r.repairDetail || '').replace(/"/g, '""')}"`,
+                `"${r.repairedBy || ''}"`,
                 `"${r.startTime || ''}"`,
                 `"${r.endTime || ''}"`,
                 `"${r.workDuration || ''}"`,
-                `"${r.checkedBy || ''}"`
+                `"${(r.remarks || '').replace(/"/g, '""')}"`
             ];
             csv += row.join(',') + '\n';
         });
@@ -296,7 +288,6 @@
         
         alert(`✅ ส่งออกข้อมูลเรียบร้อย! ทั้งหมด ${allRecords.length} รายการ\nเปิดไฟล์ด้วย Excel ได้เลยครับ`);
     }
-
 
     </script>
 </body>
