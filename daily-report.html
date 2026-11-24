@@ -6,6 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Die Maintenance Daily Report | TNC</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 :root{
   --navy:#20364d;
@@ -55,42 +57,24 @@ td input,td select{font-size:12px;padding:7px;min-width:75px}
   font-weight:700;cursor:pointer;background:var(--blue)
 }
 .btn:hover{filter:brightness(.94)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
 .green{background:var(--green)}
 .gray{background:#64748b}
 .red{background:#c0392b}
 .notice{font-size:12px;color:#667788;margin:8px 2px}
-
-/* Checkbox หลายรายการ */
 .checkbox-group{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  gap:6px;
-  min-width:150px;
-  max-height:180px;
-  overflow-y:auto;
-  padding:5px;
-  text-align:left;
+  display:flex;flex-direction:column;align-items:flex-start;
+  gap:6px;min-width:150px;max-height:180px;
+  overflow-y:auto;padding:5px;text-align:left
 }
 .checkbox-item{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  cursor:pointer;
-  font-size:12px;
-  white-space:nowrap;
-  font-weight:normal;
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+  font-size:12px;white-space:nowrap;font-weight:normal
 }
 .checkbox-item input{
-  width:16px;
-  height:16px;
-  min-width:16px;
-  margin:0;
-  padding:0;
-  accent-color:var(--green);
-  cursor:pointer;
+  width:16px;height:16px;min-width:16px;margin:0;padding:0;
+  accent-color:var(--green);cursor:pointer
 }
-
 @media(max-width:700px){
   body{padding:10px}
   .header{padding:15px}
@@ -161,25 +145,71 @@ td input,td select{font-size:12px;padding:7px;min-width:75px}
 "use strict";
 
 // ========================================
-// 1. ข้อมูล PART ประจำระบบ
+// 1. SUPABASE CONFIG
 // ========================================
 
-const PART_INFO = {
+// ใส่ Project URL และ Publishable key ของคุณ
+const SUPABASE_URL = "https://enmzfxdswzhatvcenrds.supabase.co/rest/v1/";
+const SUPABASE_ANON_KEY = "sb_publishable_DkoWB0IDDgodellT5vgcLQ_YdqIhKdI";
+
+if (!window.supabase) {
+  alert("โหลด Supabase ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต");
+  throw new Error("Supabase library not loaded");
+}
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+// ========================================
+// 2. ฐานข้อมูล PART
+// ========================================
+
+// เพิ่ม Part No. ใหม่ได้เรื่อย ๆ
+// QR ใช้รูปแบบ ?part=รหัส_PART
+
+const PART_DATABASE = {
+  "P181595028": {
     customer: "AIMX",
     partNo: "P181595028",
     process: "1/1"
+  },
+
+  "DIE-002": {
+    customer: "TSI",
+    partNo: "DIE-002",
+    process: "Progressive"
+  },
+
+  "DIE-003": {
+    customer: "ABC",
+    partNo: "DIE-003",
+    process: "Transfer"
+  }
 };
 
+// อ่าน Part No. จาก QR
+const partCode =
+  new URLSearchParams(location.search).get("part") || "P181595028";
+
+const PART_INFO = PART_DATABASE[partCode];
+
+if (!PART_INFO) {
+  document.body.innerHTML =
+    "<h2 style='padding:30px;color:red'>ไม่พบข้อมูล Part No. ในระบบ</h2>";
+  throw new Error("Unknown Part No: " + partCode);
+}
+
 // ========================================
-// 2. ระบบจัดเก็บข้อมูล
+// 3. ตัวแปรระบบ
 // ========================================
 
-const STORAGE_KEY = "pmHistory";
 const tbody = document.getElementById("tableBody");
 const dateInput = document.getElementById("reportDate");
 
 // ========================================
-// 3. รายการ Checkbox
+// 4. รายการ Checkbox
 // ========================================
 
 const options = {
@@ -205,7 +235,7 @@ const options = {
 };
 
 // ========================================
-// 4. วันที่ DD/MM/YY
+// 5. วันที่ DD/MM/YY
 // ========================================
 
 function localISODate(d = new Date()) {
@@ -218,7 +248,7 @@ function localISODate(d = new Date()) {
 dateInput.value = localISODate();
 
 // ========================================
-// 5. ป้องกัน HTML
+// 6. ป้องกัน HTML
 // ========================================
 
 function escapeHTML(value) {
@@ -232,7 +262,7 @@ function escapeHTML(value) {
 }
 
 // ========================================
-// 6. สร้าง Checkbox
+// 7. สร้าง Checkbox
 // ========================================
 
 function checkboxGroupHTML(cls, items) {
@@ -249,7 +279,7 @@ function checkboxGroupHTML(cls, items) {
 }
 
 // ========================================
-// 7. เติมข้อมูล PART อัตโนมัติ
+// 8. เติมข้อมูล PART
 // ========================================
 
 function applyPartInfo(row) {
@@ -259,7 +289,58 @@ function applyPartInfo(row) {
 }
 
 // ========================================
-// 8. คืนค่า Checkbox จากข้อมูลเดิม
+// 9. เพิ่มแถวใหม่
+// ========================================
+
+function addRow(data = {}) {
+  const tr = document.createElement("tr");
+  tr.className = "data-row";
+
+  tr.innerHTML = `
+    <td class="row-no"></td>
+    <td><input class="customer" type="text" readonly></td>
+    <td><input class="part-no" type="text" readonly></td>
+    <td><input class="process" type="text" readonly></td>
+    <td>${checkboxGroupHTML("cause-repair", options.repair)}</td>
+    <td>${checkboxGroupHTML("cause-problem", options.problem)}</td>
+    <td>${checkboxGroupHTML("repair-detail", options.detail)}</td>
+    <td><input class="repaired-by" type="text" placeholder="ชื่อ"></td>
+    <td><input class="time-start time" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM"></td>
+    <td><input class="time-end time" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM"></td>
+    <td class="duration total-time-cell">--</td>
+    <td><input class="status-done check" type="checkbox"></td>
+    <td><input class="remark" type="text" placeholder="-"></td>
+    <td>
+      <button type="button" class="btn red delete-row" style="padding:6px 9px">ลบ</button>
+    </td>
+  `;
+
+  tbody.appendChild(tr);
+  applyPartInfo(tr);
+
+  const fields = {
+    ".repaired-by": data.repairedBy,
+    ".time-start": data.startTime,
+    ".time-end": data.endTime,
+    ".remark": data.remarks
+  };
+
+  for (const [selector, value] of Object.entries(fields)) {
+    if (value != null) tr.querySelector(selector).value = value;
+  }
+
+  restoreCheckboxes(tr, "cause-repair", data.causeRepair);
+  restoreCheckboxes(tr, "cause-problem", data.causeProblem);
+  restoreCheckboxes(tr, "repair-detail", data.repairDetail);
+
+  tr.querySelector(".status-done").checked = Boolean(data.statusDone);
+
+  updateDuration(tr);
+  renumber();
+}
+
+// ========================================
+// 10. คืนค่า Checkbox
 // ========================================
 
 function restoreCheckboxes(row, cls, value) {
@@ -276,96 +357,7 @@ function restoreCheckboxes(row, cls, value) {
 }
 
 // ========================================
-// 9. เพิ่มแถวใหม่
-// ========================================
-
-function addRow(data = {}) {
-  const tr = document.createElement("tr");
-  tr.className = "data-row";
-
-  tr.innerHTML = `
-    <td class="row-no"></td>
-
-    <td>
-      <input class="customer" type="text" readonly>
-    </td>
-
-    <td>
-      <input class="part-no" type="text" readonly>
-    </td>
-
-    <td>
-      <input class="process" type="text" readonly>
-    </td>
-
-    <td>${checkboxGroupHTML("cause-repair", options.repair)}</td>
-
-    <td>${checkboxGroupHTML("cause-problem", options.problem)}</td>
-
-    <td>${checkboxGroupHTML("repair-detail", options.detail)}</td>
-
-    <td>
-      <input class="repaired-by" type="text" placeholder="ชื่อ">
-    </td>
-
-    <td>
-      <input class="time-start time" type="text"
-             inputmode="numeric" maxlength="5"
-             placeholder="HH:MM">
-    </td>
-
-    <td>
-      <input class="time-end time" type="text"
-             inputmode="numeric" maxlength="5"
-             placeholder="HH:MM">
-    </td>
-
-    <td class="duration total-time-cell">--</td>
-
-    <td>
-      <input class="status-done check" type="checkbox">
-    </td>
-
-    <td>
-      <input class="remark" type="text" placeholder="-">
-    </td>
-
-    <td>
-      <button type="button" class="btn red delete-row"
-              style="padding:6px 9px">ลบ</button>
-    </td>
-  `;
-
-  tbody.appendChild(tr);
-
-  applyPartInfo(tr);
-
-  restoreCheckboxes(tr, "cause-repair", data.causeRepair);
-  restoreCheckboxes(tr, "cause-problem", data.causeProblem);
-  restoreCheckboxes(tr, "repair-detail", data.repairDetail);
-
-  const fields = {
-    ".repaired-by": data.repairedBy,
-    ".time-start": data.startTime,
-    ".time-end": data.endTime,
-    ".remark": data.remarks
-  };
-
-  for (const [selector, value] of Object.entries(fields)) {
-    if (value != null) {
-      tr.querySelector(selector).value = value;
-    }
-  }
-
-  tr.querySelector(".status-done").checked =
-    Boolean(data.statusDone);
-
-  updateDuration(tr);
-  renumber();
-}
-
-// ========================================
-// 10. เรียงเลขลำดับ
+// 11. เรียงเลขลำดับ
 // ========================================
 
 function renumber() {
@@ -375,15 +367,13 @@ function renumber() {
 }
 
 // ========================================
-// 11. ตรวจสอบเวลา
+// 12. ตรวจสอบเวลา
 // ========================================
 
 function valid24Hour(value) {
   value = value.trim();
 
-  if (value.length !== 5 || value[2] !== ":") {
-    return false;
-  }
+  if (value.length !== 5 || value[2] !== ":") return false;
 
   const hourText = value.substring(0, 2);
   const minuteText = value.substring(3, 5);
@@ -391,9 +381,7 @@ function valid24Hour(value) {
   const isDigit = text =>
     [...text].every(char => char >= "0" && char <= "9");
 
-  if (!isDigit(hourText) || !isDigit(minuteText)) {
-    return false;
-  }
+  if (!isDigit(hourText) || !isDigit(minuteText)) return false;
 
   const hour = Number(hourText);
   const minute = Number(minuteText);
@@ -403,7 +391,7 @@ function valid24Hour(value) {
 }
 
 // ========================================
-// 12. คำนวณเวลาซ่อมเป็นนาที
+// 13. คำนวณเวลาซ่อม
 // ========================================
 
 function updateDuration(row) {
@@ -428,7 +416,7 @@ function updateDuration(row) {
 }
 
 // ========================================
-// 13. จัดรูปแบบเวลาอัตโนมัติ
+// 14. จัดรูปแบบเวลาอัตโนมัติ
 // ========================================
 
 tbody.addEventListener("input", e => {
@@ -445,7 +433,7 @@ tbody.addEventListener("input", e => {
 });
 
 // ========================================
-// 14. ลบแถว
+// 15. ลบแถว
 // ========================================
 
 tbody.addEventListener("click", e => {
@@ -464,7 +452,7 @@ tbody.addEventListener("click", e => {
 });
 
 // ========================================
-// 15. ล้างข้อมูลในแถว
+// 16. ล้างข้อมูลในแถว
 // ========================================
 
 function clearRow(row) {
@@ -481,19 +469,17 @@ function clearRow(row) {
 }
 
 // ========================================
-// 16. อ่านค่า Checkbox ที่เลือก
+// 17. อ่าน Checkbox ที่เลือก
 // ========================================
 
 function getCheckedValues(row, cls) {
   return [...row.querySelectorAll(
     `.${cls} input[type="checkbox"]:checked`
-  )]
-  .map(chk => chk.value)
-  .join(", ");
+  )].map(chk => chk.value).join(", ");
 }
 
 // ========================================
-// 17. รวบรวมข้อมูล
+// 18. รวบรวมข้อมูล
 // ========================================
 
 function getRecords() {
@@ -504,29 +490,19 @@ function getRecords() {
 
     return {
       id: `${Date.now()}-${index}-${Math.random().toString(36).slice(2,7)}`,
-
-      savedDate: dateInput.value,
       checkDate: dateInput.value,
-
       customer: PART_INFO.customer,
       partNo: PART_INFO.partNo,
       process: PART_INFO.process,
-
       causeRepair: getCheckedValues(row, "cause-repair"),
       causeProblem: getCheckedValues(row, "cause-problem"),
       repairDetail: getCheckedValues(row, "repair-detail"),
-
       repairedBy: get(".repaired-by"),
-
       startTime: get(".time-start"),
       endTime: get(".time-end"),
-
       workDuration: row.querySelector(".total-time-cell").textContent,
-
       statusDone: row.querySelector(".status-done").checked,
-
       remarks: get(".remark")
-
     };
 
   }).filter(r => Boolean(
@@ -542,28 +518,19 @@ function getRecords() {
 }
 
 // ========================================
-// 18. อ่านประวัติ
+// 19. บันทึกลง Supabase
 // ========================================
 
-function readHistory() {
-  try {
-    const parsed = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || "[]"
-    );
+async function saveData() {
 
-    return Array.isArray(parsed) ? parsed : [];
-
-  } catch (err) {
-    alert("ข้อมูลประวัติเดิมอ่านไม่ได้ กรุณาสำรองข้อมูลก่อน");
-    throw err;
+  if (
+    SUPABASE_URL === "ใส่_PROJECT_URL" ||
+    SUPABASE_ANON_KEY === "ใส่_PUBLISHABLE_KEY"
+  ) {
+    alert("กรุณาใส่ Supabase Project URL และ Publishable key ก่อนใช้งาน");
+    return;
   }
-}
 
-// ========================================
-// 19. บันทึกประวัติ
-// ========================================
-
-function saveData() {
   const rows = [...tbody.querySelectorAll(".data-row")];
 
   const invalidTime = rows.find(row =>
@@ -574,7 +541,7 @@ function saveData() {
   );
 
   if (invalidTime) {
-    alert("กรุณากรอกเวลาแบบ 24 ชั่วโมง HH:MM เช่น 08:30 หรือ 14:45");
+    alert("กรุณากรอกเวลาแบบ HH:MM ให้ถูกต้อง เช่น 08:30 หรือ 14:45");
     return;
   }
 
@@ -585,25 +552,51 @@ function saveData() {
     return;
   }
 
+  const payload = records.map(r => ({
+    id: r.id,
+    report_date: r.checkDate,
+    customer: r.customer,
+    part_no: r.partNo,
+    process: r.process,
+    cause_repair: r.causeRepair,
+    cause_problem: r.causeProblem,
+    repair_detail: r.repairDetail,
+    repaired_by: r.repairedBy,
+    start_time: r.startTime,
+    end_time: r.endTime,
+    work_duration: r.workDuration,
+    status_done: r.statusDone,
+    remarks: r.remarks
+  }));
+
+  const saveBtn = document.getElementById("saveBtn");
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = "กำลังบันทึก...";
+
   try {
-    const existing = readHistory();
 
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(existing.concat(records))
-    );
+    const { error } = await supabaseClient
+      .from("daily_reports")
+      .insert(payload);
 
-    alert(`บันทึกเรียบร้อย ${records.length} รายการ`);
+    if (error) throw error;
+
+    alert(`บันทึกสำเร็จ ${records.length} รายการ`);
 
     tbody.innerHTML = "";
     addRow();
 
-  } catch (err) {
-    if (err.name === "QuotaExceededError") {
-      alert("พื้นที่จัดเก็บของเบราว์เซอร์เต็ม กรุณาสำรองข้อมูล");
-    } else {
-      console.error(err);
-    }
+  } catch (error) {
+
+    console.error(error);
+    alert("บันทึกไม่สำเร็จ: " + error.message);
+
+  } finally {
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = "💾 บันทึกเข้าประวัติ";
+
   }
 }
 
