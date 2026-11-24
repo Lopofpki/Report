@@ -71,7 +71,7 @@ if (qrLocked) {
   notice.textContent = `🔒 QR Code ล็อกลูกค้า: ${lockedCustomer} | Part No.: ${lockedPartNo}`;
 }
 function valid24Hour(value) {
-  return /^(?:[01]\\d|2[0-3]):[0-5]\\d$/.test(value);
+  return /^(?:[01]\\d|2[0-3]):[0-5]\d$/.test(value);
 }
 function localISODate(d=new Date()){
   const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
