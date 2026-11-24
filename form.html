@@ -54,12 +54,12 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        width: 100%;
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 950px;
     }
 
     th, td {
@@ -68,6 +68,7 @@
         text-align: center;
         vertical-align: middle;
         font-size: clamp(11px, 2.5vw, 14px);
+        white-space: nowrap;
     }
 
     th {
@@ -138,42 +139,64 @@
         background-color: #2980b9;
     }
 
+    /* ===== สำหรับมือถือ ===== */
     @media (max-width: 768px) {
+        body {
+            padding: 10px;
+        }
+
         .swipe-hint {
             display: block;
         }
-        table {
-            min-width: 850px;
+
+        .header-box {
+            padding: 12px;
         }
+
+        .header-box h1 {
+            font-size: 15px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        th, td {
+            padding: 6px 4px;
+            font-size: 11px;
+        }
+
+        input, select {
+            padding: 5px 3px;
+            font-size: 11px;
+        }
+
         .button-area {
             flex-direction: column;
+            gap: 10px;
         }
-        /* เพิ่มส่วนนี้เข้าไปครับ */
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .container { padding: 10px; }
-            h2 { font-size: 15px; }
-            
-            table { width: 100%; display: block; overflow-x: auto; }
-            table th, table td { padding: 6px 3px; font-size: 11px; white-space: nowrap; }
-            table th { white-space: nowrap; }
-            
-            input[type="text"], select { font-size: 12px; padding: 4px 2px; }
-            
-            .btn { padding: 8px 12px; font-size: 13px; margin: 3px; }
-            .btn-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-            .btn-group .btn { flex: 1; min-width: 130px; }
-            
-            .time-input input { max-width: 60px; }
+
+        button {
+            width: 100%;
+            min-width: unset;
+            padding: 12px;
+            font-size: 15px;
         }
-        
-        @media (max-width: 480px) {
-            h2 { font-size: 13px; }
-            table th, table td { font-size: 10px; padding: 5px 2px; }
-            .btn { padding: 7px 10px; font-size: 12px; min-width: 110px; }
+    }
+
+    /* จอมือถือเล็กมาก */
+    @media (max-width: 480px) {
+        .header-box h1 {
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 5px 3px;
+            font-size: 10px;
         }
     }
 </style>
+
 </head>
 <body>
     <div class="container">
