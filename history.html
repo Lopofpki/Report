@@ -1,71 +1,344 @@
-
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ประวัติ Daily Report | TNC</title>
+<title>Daily Report History | TNC</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-:root{
-  --navy:#20364d;--blue:#2878bd;--green:#219653;
-  --bg:#f3f6fa;--line:#dce3eb;--text:#243447
+:root {
+  --navy: #172f4a;
+  --navy2: #203f60;
+  --blue: #2878bd;
+  --blue-light: #eaf3fb;
+  --green: #168653;
+  --orange: #c17b20;
+  --bg: #f2f5f9;
+  --white: #ffffff;
+  --text: #26384a;
+  --muted: #718096;
+  --line: #e1e8f0;
+  --shadow: 0 5px 22px rgba(25, 48, 74, .06);
 }
-*{box-sizing:border-box}
-body{
-  margin:0;padding:18px;background:var(--bg);
-  font-family:Arial,"Noto Sans Thai",sans-serif;color:var(--text)
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 26px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, "Noto Sans Thai", sans-serif;
 }
-.wrap{max-width:1600px;margin:auto}
-.header,.panel{
-  background:#fff;padding:18px;border-radius:12px;
-  box-shadow:0 3px 14px #20364d12;margin-bottom:15px
+
+.wrap { max-width: 1700px; margin: auto; }
+
+.header {
+  background: linear-gradient(120deg, var(--navy), var(--navy2));
+  color: white;
+  padding: 27px 30px;
+  border-radius: 15px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
 }
-h1{font-size:22px;margin:0 0 5px;color:var(--navy)}
-.sub{font-size:14px;color:#667788}
-.tools{
-  display:flex;gap:10px;flex-wrap:wrap;
-  margin-top:15px;align-items:end
+
+.brand { display: flex; align-items: center; gap: 14px; }
+
+.brand-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
 }
-.field{
-  display:flex;flex-direction:column;gap:5px;
-  font-size:13px;font-weight:600;min-width:160px;flex:1
+
+.header h1 {
+  margin: 0;
+  font-size: 23px;
+  font-weight: 700;
 }
-input{
-  font:inherit;padding:9px;border:1px solid #cbd5df;
-  border-radius:6px;width:100%;min-width:0
+
+.header-sub { color: #c7d7e8; font-size: 13px; margin-top: 5px; }
+
+.header-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 23px;
+  padding-top: 17px;
+  border-top: 1px solid rgba(255,255,255,.15);
 }
-.btn{
-  border:0;border-radius:7px;padding:10px 15px;
-  color:white;font-weight:700;cursor:pointer;background:var(--blue)
+
+.header-tag {
+  font-size: 12px;
+  color: #dce9f6;
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
-.btn:disabled{opacity:.6;cursor:not-allowed}
-.green{background:var(--green)}
-.gray{background:#64748b}
-.stats{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
-.stat{background:#eef5fb;padding:10px 14px;border-radius:8px;font-size:14px}
-.stat b{font-size:18px;color:var(--navy)}
-.table-wrap{
-  overflow:auto;background:white;border-radius:12px;
-  box-shadow:0 3px 14px #20364d12
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #52d69b;
 }
-table{border-collapse:collapse;width:100%;min-width:1400px}
-th,td{
-  border:1px solid var(--line);padding:8px;
-  text-align:center;font-size:12px;white-space:nowrap
+
+.panel {
+  background: var(--white);
+  padding: 23px;
+  border-radius: 13px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
 }
-th{background:var(--navy);color:white;position:sticky;top:0}
-tbody tr:nth-child(even){background:#f8fafc}
-.done{color:#168044;font-weight:bold}
-.pending{color:#b7791f;font-weight:bold}
-.empty{text-align:center;padding:30px;color:#718096}
-@media(max-width:700px){
-  body{padding:10px}
-  h1{font-size:18px}
-  .header,.panel{padding:13px}
-  .tools .btn{flex:1}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 17px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.section-title::before {
+  content: "";
+  width: 4px;
+  height: 19px;
+  background: var(--blue);
+  border-radius: 5px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) 1fr 1fr auto auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #526477;
+  min-width: 0;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d6e0e9;
+  border-radius: 7px;
+  background: #fbfcfe;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(40,120,189,.1);
+  background: white;
+}
+
+.btn {
+  border: 0;
+  border-radius: 7px;
+  padding: 0 16px;
+  height: 42px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  color: white;
+  background: var(--blue);
+  transition: .2s;
+  white-space: nowrap;
+}
+
+.btn:hover { filter: brightness(.94); transform: translateY(-1px); }
+.btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+.btn-gray { background: #64748b; }
+.btn-green { background: var(--green); }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 21px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 17px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.stat-icon {
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.stat-blue { background: #eaf3fb; }
+.stat-green { background: #e8f7ef; }
+.stat-orange { background: #fff4e5; }
+.stat-purple { background: #f0edff; }
+
+.stat-label { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+
+.stat-number {
+  font-size: 23px;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 17px;
+  border-top: 1px solid var(--line);
+}
+
+.action-left, .action-right { display: flex; gap: 9px; flex-wrap: wrap; }
+
+.table-panel {
+  background: white;
+  border-radius: 13px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.table-heading {
+  padding: 20px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.table-heading h2 { margin: 0; color: var(--navy); font-size: 16px; }
+.table-heading p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+
+.result-label {
+  font-size: 12px;
+  color: var(--blue);
+  background: var(--blue-light);
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.table-wrap { width: 100%; overflow: auto; max-height: 68vh; }
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  min-width: 1450px;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--navy);
+  color: white;
+  padding: 14px 11px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  border-right: 1px solid rgba(255,255,255,.09);
+}
+
+td {
+  padding: 12px 10px;
+  text-align: center;
+  font-size: 12px;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+  color: #435569;
+}
+
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody tr:hover { background: #edf5fc; }
+td:nth-child(4) { font-weight: 700; color: var(--navy); }
+
+.status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.done { background: #e7f7ee; color: #168044; }
+.pending { background: #fff4e3; color: #a66b16; }
+
+.empty {
+  text-align: center;
+  padding: 48px 20px !important;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.footer {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 11px;
+  padding: 22px 0 5px;
+}
+
+@media (max-width: 1050px) {
+  .filter-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  body { padding: 12px; }
+  .header { padding: 21px 17px; }
+  .header h1 { font-size: 18px; }
+  .brand-icon { width: 42px; height: 42px; }
+  .panel { padding: 16px; }
+  .filter-grid { grid-template-columns: 1fr; }
+  .filter-grid .btn { width: 100%; }
+  .stats-grid { gap: 9px; }
+  .stat-card { padding: 12px 10px; gap: 9px; }
+  .stat-icon { width: 35px; height: 35px; font-size: 16px; }
+  .stat-number { font-size: 20px; }
+  .action-row { align-items: stretch; }
+  .action-left, .action-right { width: 100%; }
+  .action-row .btn { flex: 1; }
 }
 </style>
 </head>
@@ -74,16 +347,31 @@ tbody tr:nth-child(even){background:#f8fafc}
 <div class="wrap">
 
 <header class="header">
-  <h1>ประวัติ Die Maintenance Daily Report</h1>
-  <div class="sub">
-    TNC · ประวัติส่วนกลางของแผนก Maintenance · รวมทุก PART
+  <div class="brand">
+    <div class="brand-icon">📋</div>
+    <div>
+      <h1>Die Maintenance Daily Report</h1>
+      <div class="header-sub">ระบบประวัติการซ่อมบำรุงแม่พิมพ์ · TNC</div>
+    </div>
   </div>
 
-  <div class="tools">
+  <div class="header-bottom">
+    <div class="header-tag">
+      <span class="live-dot"></span>
+      ระบบประวัติส่วนกลางของแผนก Maintenance
+    </div>
+    <div class="header-tag">ALL PARTS · DAILY REPORT</div>
+  </div>
+</header>
+
+<section class="panel">
+  <div class="section-title">ค้นหาและกรองข้อมูล</div>
+
+  <div class="filter-grid">
     <label class="field">
       ค้นหาข้อมูล
       <input id="search" type="search"
-        placeholder="ลูกค้า / Part No. / ผู้ซ่อม / รายละเอียด">
+        placeholder="ค้นหาลูกค้า / Part No. / ผู้ซ่อม / รายละเอียด">
     </label>
 
     <label class="field">
@@ -96,59 +384,100 @@ tbody tr:nth-child(even){background:#f8fafc}
       <input id="toDate" type="date">
     </label>
 
-    <button class="btn" id="filterBtn" type="button">ค้นหา</button>
-    <button class="btn gray" id="resetBtn" type="button">ล้างตัวกรอง</button>
-  </div>
-</header>
-
-<section class="panel">
-  <div class="stats">
-    <div class="stat">รายการที่แสดง <b id="count">0</b></div>
-    <div class="stat">เสร็จแล้ว <b id="doneCount">0</b></div>
-    <div class="stat">ยังไม่เสร็จ <b id="pendingCount">0</b></div>
-    <div class="stat">จำนวน PART <b id="partCount">0</b></div>
-  </div>
-
-  <div class="tools">
-    <button class="btn gray" id="refreshBtn" type="button">
-      ↻ โหลดข้อมูลใหม่
-    </button>
-
-    <button class="btn green" id="exportBtn" type="button">
-      ⬇ ส่งออก CSV
-    </button>
-
-    <button class="btn" id="backBtn" type="button">
-      ＋ กลับไปหน้าบันทึก
-    </button>
+    <button class="btn" id="filterBtn" type="button">⌕ ค้นหา</button>
+    <button class="btn btn-gray" id="resetBtn" type="button">ล้างตัวกรอง</button>
   </div>
 </section>
 
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-  <th>#</th>
-  <th>วันที่</th>
-  <th>ลูกค้า</th>
-  <th>Part No.</th>
-  <th>Process</th>
-  <th>สาเหตุการซ่อม</th>
-  <th>สาเหตุปัญหา</th>
-  <th>รายละเอียดการซ่อม</th>
-  <th>ผู้ซ่อม</th>
-  <th>เวลาเริ่ม</th>
-  <th>เวลาเสร็จ</th>
-  <th>รวมเวลา</th>
-  <th>สถานะ</th>
-  <th>หมายเหตุ</th>
-</tr>
-</thead>
-<tbody id="historyBody">
-<tr><td colspan="14" class="empty">กำลังโหลดข้อมูล...</td></tr>
-</tbody>
-</table>
-</div>
+<section class="panel">
+  <div class="section-title">ภาพรวมข้อมูล</div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon stat-blue">📄</div>
+      <div>
+        <div class="stat-label">รายการที่แสดง</div>
+        <div class="stat-number" id="count">0</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-green">✓</div>
+      <div>
+        <div class="stat-label">เสร็จแล้ว</div>
+        <div class="stat-number" id="doneCount">0</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-orange">◷</div>
+      <div>
+        <div class="stat-label">ยังไม่เสร็จ</div>
+        <div class="stat-number" id="pendingCount">0</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-purple">⚙</div>
+      <div>
+        <div class="stat-label">จำนวน PART</div>
+        <div class="stat-number" id="partCount">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <div class="action-left">
+      <button class="btn btn-gray" id="refreshBtn" type="button">↻ โหลดข้อมูลใหม่</button>
+      <button class="btn btn-green" id="exportBtn" type="button">↓ ส่งออก CSV</button>
+    </div>
+
+    <div class="action-right">
+      <button class="btn" id="backBtn" type="button">+ กลับไปหน้าบันทึก</button>
+    </div>
+  </div>
+</section>
+
+<section class="table-panel">
+  <div class="table-heading">
+    <div>
+      <h2>รายการประวัติ Daily Report</h2>
+      <p>ข้อมูลการซ่อมบำรุงทั้งหมดจากฐานข้อมูลส่วนกลาง</p>
+    </div>
+    <div class="result-label" id="resultLabel">0 รายการ</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>วันที่</th>
+          <th>ลูกค้า</th>
+          <th>Part No.</th>
+          <th>Process</th>
+          <th>สาเหตุการซ่อม</th>
+          <th>สาเหตุปัญหา</th>
+          <th>รายละเอียดการซ่อม</th>
+          <th>ผู้ซ่อม</th>
+          <th>เวลาเริ่ม</th>
+          <th>เวลาเสร็จ</th>
+          <th>รวมเวลา</th>
+          <th>สถานะ</th>
+          <th>หมายเหตุ</th>
+        </tr>
+      </thead>
+
+      <tbody id="historyBody">
+        <tr><td colspan="14" class="empty">กำลังโหลดข้อมูล...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="footer">
+  TNC · Die Maintenance Daily Report System
+</footer>
 
 </div>
 
@@ -173,7 +502,7 @@ const supabaseClient = window.supabase.createClient(
 );
 
 // ========================================
-// 2. ตัวแปรระบบ
+// 2. VARIABLES
 // ========================================
 
 const body = document.getElementById("historyBody");
@@ -182,35 +511,99 @@ let allRecords = [];
 let visibleRecords = [];
 
 // ========================================
-// 3. ป้องกัน HTML
+// 3. SAFE HTML
 // ========================================
 
 function safe(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
   }[c]));
 }
 
 // ========================================
-// 4. แปลงวันที่ DD/MM/YY เป็น YYYY-MM-DD
+// 4. DATE FORMAT DD/MM/YY
 // ========================================
 
+// แปลงวันที่จากฐานข้อมูลเป็น DD/MM/YY
+// รองรับ YYYY-MM-DD, DD/MM/YY และ MM/DD/YY
+function formatDate(value) {
+  if (!value) return "";
+
+  const str = String(value).trim();
+
+  // YYYY-MM-DD หรือ YYYY-MM-DDTHH:mm:ss
+  let match = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+
+  if (match) {
+    return `${match[3].padStart(2, "0")}/${match[2].padStart(2, "0")}/${match[1].slice(-2)}`;
+  }
+
+  // MM/DD/YY หรือ MM/DD/YYYY
+  match = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
+
+  if (match) {
+    const first = Number(match[1]);
+    const second = Number(match[2]);
+    const year = match[3].slice(-2);
+
+    // หากตัวแรกเกิน 12 แสดงว่าเป็น DD/MM/YY อยู่แล้ว
+    if (first > 12) {
+      return `${String(first).padStart(2, "0")}/${String(second).padStart(2, "0")}/${year}`;
+    }
+
+    // หากตัวที่สองเกิน 12 แสดงว่าเป็น MM/DD/YY
+    if (second > 12) {
+      return `${String(second).padStart(2, "0")}/${String(first).padStart(2, "0")}/${year}`;
+    }
+
+    // กรณีวันที่กำกวม ให้ยึดรูปแบบเดิมของระบบเป็น DD/MM/YY
+    return `${String(first).padStart(2, "0")}/${String(second).padStart(2, "0")}/${year}`;
+  }
+
+  return str;
+}
+
+// ใช้วันที่มาตรฐาน YYYY-MM-DD สำหรับกรองวันที่
 function dateToISO(value) {
-  const match = String(value || "").match(
-    /^(\d{2})\/(\d{2})\/(\d{2})$/
-  );
+  if (!value) return "";
+
+  const str = String(value).trim();
+
+  let match = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+
+  if (match) {
+    return `${match[1]}-${match[2].padStart(2, "0")}-${match[3].padStart(2, "0")}`;
+  }
+
+  match = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
 
   if (!match) return "";
 
-  const day = match[1];
-  const month = match[2];
-  const year = "20" + match[3];
+  const first = Number(match[1]);
+  const second = Number(match[2]);
+  let year = match[3];
 
-  return `${year}-${month}-${day}`;
+  if (year.length === 2) year = "20" + year;
+
+  let day, month;
+
+  if (first > 12) {
+    day = first;
+    month = second;
+  } else if (second > 12) {
+    month = first;
+    day = second;
+  } else {
+    // วันที่กำกวม ยึด DD/MM/YY
+    day = first;
+    month = second;
+  }
+
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
 function recordDate(record) {
@@ -218,11 +611,10 @@ function recordDate(record) {
 }
 
 // ========================================
-// 5. โหลดประวัติทุก PART จาก Supabase
+// 5. LOAD DATA
 // ========================================
 
 async function load() {
-
   const refreshBtn = document.getElementById("refreshBtn");
 
   refreshBtn.disabled = true;
@@ -232,7 +624,6 @@ async function load() {
     '<tr><td colspan="14" class="empty">กำลังโหลดข้อมูลจากฐานข้อมูลกลาง...</td></tr>';
 
   try {
-
     const { data, error } = await supabaseClient
       .from("daily_reports")
       .select("*")
@@ -261,7 +652,6 @@ async function load() {
     render();
 
   } catch (error) {
-
     console.error("Supabase load error:", error);
 
     body.innerHTML = `
@@ -273,19 +663,16 @@ async function load() {
     `;
 
   } finally {
-
     refreshBtn.disabled = false;
     refreshBtn.textContent = "↻ โหลดข้อมูลใหม่";
-
   }
 }
 
 // ========================================
-// 6. ค้นหาและกรองข้อมูล
+// 6. SEARCH AND FILTER
 // ========================================
 
 function render() {
-
   const q = document.getElementById("search")
     .value.trim().toLowerCase();
 
@@ -293,7 +680,6 @@ function render() {
   const to = document.getElementById("toDate").value;
 
   visibleRecords = allRecords.filter(r => {
-
     const hay = [
       r.customer,
       r.partNo,
@@ -312,20 +698,22 @@ function render() {
       (!from || (d && d >= from)) &&
       (!to || (d && d <= to))
     );
-
   });
 
   document.getElementById("count").textContent =
     visibleRecords.length;
 
   document.getElementById("doneCount").textContent =
-    visibleRecords.filter(r => r.statusDone).length;
+    visibleRecords.filter(r => r.statusDone === true).length;
 
   document.getElementById("pendingCount").textContent =
-    visibleRecords.filter(r => !r.statusDone).length;
+    visibleRecords.filter(r => r.statusDone !== true).length;
 
   document.getElementById("partCount").textContent =
     new Set(visibleRecords.map(r => r.partNo).filter(Boolean)).size;
+
+  document.getElementById("resultLabel").textContent =
+    `${visibleRecords.length.toLocaleString("th-TH")} รายการ`;
 
   if (!visibleRecords.length) {
     body.innerHTML =
@@ -336,7 +724,7 @@ function render() {
   body.innerHTML = visibleRecords.map((r, i) => `
     <tr>
       <td>${i + 1}</td>
-      <td>${safe(recordDate(r))}</td>
+      <td>${safe(formatDate(recordDate(r)))}</td>
       <td>${safe(r.customer)}</td>
       <td>${safe(r.partNo)}</td>
       <td>${safe(r.process)}</td>
@@ -347,8 +735,10 @@ function render() {
       <td>${safe(r.startTime)}</td>
       <td>${safe(r.endTime)}</td>
       <td>${safe(r.workDuration || "--:--")}</td>
-      <td class="${r.statusDone ? "done" : "pending"}">
-        ${r.statusDone ? "เสร็จแล้ว" : "ยังไม่เสร็จ"}
+      <td>
+        <span class="status ${r.statusDone === true ? "done" : "pending"}">
+          ${r.statusDone === true ? "เสร็จแล้ว" : "ยังไม่เสร็จ"}
+        </span>
       </td>
       <td>${safe(r.remarks)}</td>
     </tr>
@@ -356,7 +746,7 @@ function render() {
 }
 
 // ========================================
-// 7. ปุ่มค้นหา
+// 7. FILTER EVENTS
 // ========================================
 
 document.getElementById("filterBtn")
@@ -372,29 +762,26 @@ document.getElementById("toDate")
   .addEventListener("change", render);
 
 // ========================================
-// 8. ล้างตัวกรอง
+// 8. RESET FILTER
 // ========================================
 
 document.getElementById("resetBtn")
   .addEventListener("click", () => {
-
     document.getElementById("search").value = "";
     document.getElementById("fromDate").value = "";
     document.getElementById("toDate").value = "";
-
     render();
-
   });
 
 // ========================================
-// 9. โหลดข้อมูลใหม่
+// 9. REFRESH
 // ========================================
 
 document.getElementById("refreshBtn")
   .addEventListener("click", load);
 
 // ========================================
-// 10. กลับหน้าบันทึก
+// 10. BACK TO DAILY REPORT
 // ========================================
 
 document.getElementById("backBtn")
@@ -403,7 +790,7 @@ document.getElementById("backBtn")
   });
 
 // ========================================
-// 11. ส่งออก CSV
+// 11. EXPORT CSV
 // ========================================
 
 function csvCell(value) {
@@ -412,43 +799,35 @@ function csvCell(value) {
 
 document.getElementById("exportBtn")
   .addEventListener("click", () => {
-
     if (!visibleRecords.length) {
       alert("ไม่มีข้อมูลสำหรับส่งออก");
       return;
     }
 
     const headers = [
-      "วันที่","ลูกค้า","Part No.","Process",
-      "สาเหตุการซ่อม","สาเหตุปัญหา","รายละเอียดการซ่อม",
-      "ผู้ซ่อม","เวลาเริ่ม","เวลาเสร็จ","รวมเวลา",
-      "เสร็จ","หมายเหตุ"
-    ];
-
-    const keys = [
-      "checkDate","customer","partNo","process",
-      "causeRepair","causeProblem","repairDetail",
-      "repairedBy","startTime","endTime","workDuration",
-      "statusDone","remarks"
+      "วันที่", "ลูกค้า", "Part No.", "Process",
+      "สาเหตุการซ่อม", "สาเหตุปัญหา", "รายละเอียดการซ่อม",
+      "ผู้ซ่อม", "เวลาเริ่ม", "เวลาเสร็จ", "รวมเวลา",
+      "สถานะ", "หมายเหตุ"
     ];
 
     const rows = [
       headers,
-      ...visibleRecords.map(r =>
-        keys.map(k => {
-
-          if (k === "statusDone") {
-            return r[k] ? "เสร็จแล้ว" : "ยังไม่เสร็จ";
-          }
-
-          if (k === "checkDate") {
-            return recordDate(r);
-          }
-
-          return r[k] ?? "";
-
-        })
-      )
+      ...visibleRecords.map(r => [
+        formatDate(recordDate(r)),
+        r.customer,
+        r.partNo,
+        r.process,
+        r.causeRepair,
+        r.causeProblem,
+        r.repairDetail,
+        r.repairedBy,
+        r.startTime,
+        r.endTime,
+        r.workDuration,
+        r.statusDone === true ? "เสร็จแล้ว" : "ยังไม่เสร็จ",
+        r.remarks
+      ])
     ];
 
     const csv = "\uFEFF" +
@@ -469,12 +848,11 @@ document.getElementById("exportBtn")
     a.click();
     a.remove();
 
-    URL.revokeObjectURL(url);
-
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
 
 // ========================================
-// 12. เริ่มต้นระบบ
+// 12. START
 // ========================================
 
 load();
@@ -482,3 +860,4 @@ load();
 </script>
 </body>
 </html>
+```
