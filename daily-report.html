@@ -318,7 +318,7 @@ td .time{min-width:95px;text-align:center}
   <th>ผู้ซ่อม</th>
   <th>เวลาเริ่ม</th>
   <th>เวลาเสร็จ</th>
-  <th>รวมเวลา</th>
+  <th>รวมเวลา (นาที)</th>
   <th>หมายเหตุ</th>
 </tr>
 </thead>
@@ -330,8 +330,8 @@ td .time{min-width:95px;text-align:center}
   <span>ℹ</span>
   <span>
     กรอกเวลาในรูปแบบ 24 ชั่วโมง เช่น 08:30 หรือ 14:45
-    ระบบคำนวณระยะเวลาการซ่อมให้อัตโนมัติ และรองรับงานข้ามเที่ยงคืน
-    สามารถเลือกสาเหตุและรายละเอียดได้มากกว่าหนึ่งรายการ
+    ระบบคำนวณระยะเวลาการซ่อมเป็นนาทีให้อัตโนมัติ
+    และรองรับงานข้ามเที่ยงคืน สามารถเลือกสาเหตุและรายละเอียดได้มากกว่าหนึ่งรายการ
   </span>
 </div>
 
@@ -592,12 +592,12 @@ function valid24Hour(value) {
 }
 
 // ========================================
-// 14. คำนวณเวลาซ่อม
+// 14. คำนวณเวลาซ่อมเป็นนาทีทั้งหมด
 // ========================================
 
 function updateDuration(row) {
-  const start = row.querySelector(".time-start").value;
-  const end = row.querySelector(".time-end").value;
+  const start = row.querySelector(".time-start").value.trim();
+  const end = row.querySelector(".time-end").value.trim();
   const cell = row.querySelector(".total-time-cell");
 
   if (!start || !end ||
@@ -609,15 +609,17 @@ function updateDuration(row) {
   const [sh, sm] = start.split(":").map(Number);
   const [eh, em] = end.split(":").map(Number);
 
-  let diff = (eh * 60 + em) - (sh * 60 + sm);
-  if (diff < 0) diff += 1440;
+  const startMinutes = (sh * 60) + sm;
+  const endMinutes = (eh * 60) + em;
 
-  const hours = Math.floor(diff / 60);
-  const minutes = diff % 60;
+  let totalMinutes = endMinutes - startMinutes;
 
-  cell.textContent = hours > 0
-    ? `${hours} ชม. ${minutes} นาที`
-    : `${minutes} นาที`;
+  // รองรับงานข้ามเที่ยงคืน
+  if (totalMinutes < 0) {
+    totalMinutes += 1440;
+  }
+
+  cell.textContent = `${totalMinutes} นาที`;
 }
 
 // ========================================
@@ -673,6 +675,28 @@ function getRecords() {
     const get = selector =>
       row.querySelector(selector).value.trim();
 
+    const start = get(".time-start");
+    const end = get(".time-end");
+
+    // คำนวณและเก็บเป็นนาทีเท่านั้น
+    let workDuration = "";
+
+    if (start && end &&
+        valid24Hour(start) && valid24Hour(end)) {
+
+      const [sh, sm] = start.split(":").map(Number);
+      const [eh, em] = end.split(":").map(Number);
+
+      let minutes = (eh * 60 + em) - (sh * 60 + sm);
+
+      // รองรับงานข้ามเที่ยงคืน
+      if (minutes < 0) {
+        minutes += 1440;
+      }
+
+      workDuration = String(minutes);
+    }
+
     return {
       id: `${Date.now()}-${index}-${Math.random().toString(36).slice(2,7)}`,
       checkDate: dateInput.value,
@@ -683,9 +707,9 @@ function getRecords() {
       causeProblem: getCheckedValues(row, "cause-problem"),
       repairDetail: getCheckedValues(row, "repair-detail"),
       repairedBy: get(".repaired-by"),
-      startTime: get(".time-start"),
-      endTime: get(".time-end"),
-      workDuration: row.querySelector(".total-time-cell").textContent,
+      startTime: start,
+      endTime: end,
+      workDuration: workDuration,
       remarks: get(".remark")
     };
   }).filter(r => Boolean(
@@ -732,7 +756,10 @@ async function saveData() {
     repaired_by: r.repairedBy,
     start_time: r.startTime,
     end_time: r.endTime,
+
+    // บันทึกเฉพาะตัวเลขนาที เช่น "150"
     work_duration: r.workDuration,
+
     remarks: r.remarks
   }));
 
