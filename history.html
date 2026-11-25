@@ -16,6 +16,7 @@
   --blue-light:#eaf3fb;
   --green:#168653;
   --purple:#7256b5;
+  --orange:#d97706;
   --bg:#f2f5f9;
   --white:#ffffff;
   --text:#26384a;
@@ -24,9 +25,11 @@
   --shadow:0 5px 22px rgba(25,48,74,.06);
 }
 
-*{box-sizing:border-box}
+* {
+  box-sizing:border-box;
+}
 
-body{
+body {
   margin:0;
   padding:26px;
   background:var(--bg);
@@ -34,20 +37,29 @@ body{
   font-family:Arial,"Noto Sans Thai",sans-serif;
 }
 
-.wrap{max-width:1700px;margin:auto}
+.wrap {
+  max-width:1700px;
+  margin:auto;
+}
 
-.header{
+/* HEADER */
+
+.header {
   background:linear-gradient(120deg,var(--navy),var(--navy2));
   color:white;
   padding:27px 30px;
   border-radius:15px;
   box-shadow:var(--shadow);
-  margin-bottom:20px;
+  margin-bottom:22px;
 }
 
-.brand{display:flex;align-items:center;gap:14px}
+.brand {
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
 
-.brand-icon{
+.brand-icon {
   width:48px;
   height:48px;
   border-radius:12px;
@@ -58,10 +70,19 @@ body{
   font-size:25px;
 }
 
-.header h1{margin:0;font-size:23px;font-weight:700}
-.header-sub{color:#c7d7e8;font-size:13px;margin-top:5px}
+.header h1 {
+  margin:0;
+  font-size:23px;
+  font-weight:700;
+}
 
-.header-bottom{
+.header-sub {
+  color:#c7d7e8;
+  font-size:13px;
+  margin-top:5px;
+}
+
+.header-bottom {
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -72,7 +93,7 @@ body{
   border-top:1px solid rgba(255,255,255,.15);
 }
 
-.header-tag{
+.header-tag {
   font-size:12px;
   color:#dce9f6;
   display:flex;
@@ -80,14 +101,16 @@ body{
   gap:7px;
 }
 
-.live-dot{
+.live-dot {
   width:8px;
   height:8px;
   border-radius:50%;
   background:#52d69b;
 }
 
-.panel{
+/* GENERAL PANEL */
+
+.panel {
   background:var(--white);
   padding:23px;
   border-radius:13px;
@@ -95,7 +118,7 @@ body{
   margin-bottom:18px;
 }
 
-.section-title{
+.section-title {
   font-size:16px;
   font-weight:700;
   color:var(--navy);
@@ -105,7 +128,7 @@ body{
   gap:9px;
 }
 
-.section-title::before{
+.section-title::before {
   content:"";
   width:4px;
   height:19px;
@@ -113,14 +136,16 @@ body{
   border-radius:5px;
 }
 
-.filter-grid{
+/* FILTER */
+
+.filter-grid {
   display:grid;
   grid-template-columns:minmax(220px,2fr) 1fr 1fr auto auto;
   gap:12px;
   align-items:end;
 }
 
-.field{
+.field {
   display:flex;
   flex-direction:column;
   gap:7px;
@@ -130,7 +155,7 @@ body{
   min-width:0;
 }
 
-input{
+input {
   width:100%;
   min-width:0;
   height:42px;
@@ -144,13 +169,15 @@ input{
   outline:none;
 }
 
-input:focus{
+input:focus {
   border-color:var(--blue);
   box-shadow:0 0 0 3px rgba(40,120,189,.1);
   background:white;
 }
 
-.btn{
+/* BUTTONS */
+
+.btn {
   border:0;
   border-radius:7px;
   padding:0 16px;
@@ -164,74 +191,277 @@ input:focus{
   white-space:nowrap;
 }
 
-.btn:hover{filter:brightness(.94);transform:translateY(-1px)}
-.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
-.btn-gray{background:#64748b}
-.btn-green{background:var(--green)}
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:14px;
-  margin-bottom:21px;
+.btn:hover {
+  filter:brightness(.94);
+  transform:translateY(-1px);
 }
 
-.stat-card{
-  background:white;
-  border:1px solid var(--line);
-  border-radius:11px;
-  padding:17px 18px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  min-width:0;
+.btn:disabled {
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
 }
 
-.stat-icon{
-  width:43px;
-  height:43px;
-  flex-shrink:0;
-  border-radius:10px;
+.btn-gray {
+  background:#64748b;
+}
+
+.btn-green {
+  background:var(--green);
+}
+
+/* DASHBOARD */
+
+.dashboard-section {
+  margin-bottom:22px;
+}
+
+.dashboard-title {
   display:flex;
+  justify-content:space-between;
   align-items:center;
-  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.dashboard-title h2 {
+  margin:0;
+  color:var(--navy);
   font-size:20px;
 }
 
-.stat-blue{background:#eaf3fb}
-.stat-green{background:#e8f7ef}
-.stat-purple{background:#f0edff}
-
-.stat-label{font-size:12px;color:var(--muted);margin-bottom:5px}
-
-.stat-number{
-  font-size:23px;
-  line-height:1;
-  font-weight:700;
-  color:var(--navy);
-  font-variant-numeric:tabular-nums;
+.dashboard-title p {
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
 }
 
-.action-row{
+.dashboard-period {
+  padding:8px 13px;
+  border-radius:20px;
+  background:var(--blue-light);
+  color:var(--blue);
+  font-size:11px;
+  font-weight:700;
+}
+
+.dashboard-cards {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-bottom:17px;
+}
+
+.dash-card {
+  position:relative;
+  overflow:hidden;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:19px;
+  box-shadow:var(--shadow);
+}
+
+.dash-card::after {
+  content:"";
+  position:absolute;
+  right:-20px;
+  bottom:-35px;
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  background:var(--card-tint,#eaf3fb);
+  opacity:.65;
+}
+
+.dash-card-top {
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px;
-  flex-wrap:wrap;
-  padding-top:17px;
-  border-top:1px solid var(--line);
+  gap:8px;
+  position:relative;
+  z-index:1;
 }
 
-.action-left,.action-right{display:flex;gap:9px;flex-wrap:wrap}
+.dash-card-label {
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
 
-.table-panel{
+.dash-card-icon {
+  width:41px;
+  height:41px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+  background:var(--card-tint,#eaf3fb);
+}
+
+.dash-card-value {
+  margin-top:15px;
+  color:var(--navy);
+  font-size:30px;
+  font-weight:800;
+  line-height:1.1;
+  font-variant-numeric:tabular-nums;
+  position:relative;
+  z-index:1;
+  overflow-wrap:anywhere;
+}
+
+.dash-card-unit {
+  color:var(--muted);
+  font-size:11px;
+  margin-top:7px;
+  position:relative;
+  z-index:1;
+}
+
+/* DASHBOARD CHARTS */
+
+.dashboard-grid {
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  gap:16px;
+  margin-bottom:17px;
+}
+
+.dash-panel {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  min-width:0;
+}
+
+.dash-panel h3 {
+  margin:0;
+  color:var(--navy);
+  font-size:14px;
+}
+
+.dash-panel-sub {
+  color:var(--muted);
+  font-size:11px;
+  margin-top:5px;
+  margin-bottom:20px;
+}
+
+.month-chart {
+  display:flex;
+  align-items:flex-end;
+  gap:12px;
+  height:190px;
+  padding:10px 3px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.month-column {
+  flex:1;
+  min-width:0;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  gap:7px;
+}
+
+.month-value {
+  color:var(--muted);
+  font-size:10px;
+  font-weight:700;
+}
+
+.month-bar-area {
+  width:100%;
+  height:135px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.month-bar {
+  width:min(38px,75%);
+  min-height:3px;
+  border-radius:6px 6px 0 0;
+  background:linear-gradient(180deg,#55a5e5,#2878bd);
+  transition:height .3s ease;
+}
+
+.month-label {
+  color:var(--muted);
+  font-size:10px;
+  white-space:nowrap;
+}
+
+.rank-list {
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.rank-item {
+  min-width:0;
+}
+
+.rank-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:7px;
+  font-size:12px;
+}
+
+.rank-name {
+  color:var(--text);
+  font-weight:700;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.rank-number {
+  color:var(--blue);
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.rank-track {
+  height:8px;
+  background:#edf1f6;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.rank-fill {
+  height:100%;
+  border-radius:20px;
+  background:linear-gradient(90deg,#2878bd,#55a5e5);
+}
+
+.rank-empty {
+  text-align:center;
+  padding:25px 10px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* TABLE */
+
+.table-panel {
   background:white;
   border-radius:13px;
   box-shadow:var(--shadow);
   overflow:hidden;
 }
 
-.table-heading{
+.table-heading {
   padding:20px 22px;
   display:flex;
   justify-content:space-between;
@@ -241,10 +471,19 @@ input:focus{
   border-bottom:1px solid var(--line);
 }
 
-.table-heading h2{margin:0;color:var(--navy);font-size:16px}
-.table-heading p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+.table-heading h2 {
+  margin:0;
+  color:var(--navy);
+  font-size:16px;
+}
 
-.result-label{
+.table-heading p {
+  margin:5px 0 0;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.result-label {
   font-size:12px;
   color:var(--blue);
   background:var(--blue-light);
@@ -253,16 +492,20 @@ input:focus{
   font-weight:700;
 }
 
-.table-wrap{width:100%;overflow:auto;max-height:68vh}
+.table-wrap {
+  width:100%;
+  overflow:auto;
+  max-height:68vh;
+}
 
-table{
+table {
   border-collapse:separate;
   border-spacing:0;
   width:100%;
   min-width:1350px;
 }
 
-th{
+th {
   position:sticky;
   top:0;
   z-index:2;
@@ -275,7 +518,7 @@ th{
   border-right:1px solid rgba(255,255,255,.09);
 }
 
-td{
+td {
   padding:12px 10px;
   text-align:center;
   font-size:12px;
@@ -284,48 +527,171 @@ td{
   color:#435569;
 }
 
-tbody tr:nth-child(even){background:#f8fafc}
-tbody tr:hover{background:#edf5fc}
-td:nth-child(4){font-weight:700;color:var(--navy)}
+tbody tr:nth-child(even) {
+  background:#f8fafc;
+}
 
-.duration{
+tbody tr:hover {
+  background:#edf5fc;
+}
+
+td:nth-child(4) {
+  font-weight:700;
+  color:var(--navy);
+}
+
+.duration {
   font-weight:700;
   color:var(--green);
 }
 
-.empty{
+.empty {
   text-align:center;
   padding:48px 20px !important;
   color:var(--muted);
   font-size:13px;
 }
 
-.footer{
+/* FOOTER */
+
+.footer {
   text-align:center;
   color:#94a3b8;
   font-size:11px;
   padding:22px 0 5px;
 }
 
-@media(max-width:1050px){
-  .filter-grid{grid-template-columns:repeat(2,1fr)}
+/* RESPONSIVE */
+
+@media(max-width:1050px) {
+  .filter-grid {
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .dashboard-cards {
+    grid-template-columns:repeat(2,1fr);
+  }
 }
 
-@media(max-width:600px){
-  body{padding:12px}
-  .header{padding:21px 17px}
-  .header h1{font-size:18px}
-  .brand-icon{width:42px;height:42px}
-  .panel{padding:16px}
-  .filter-grid{grid-template-columns:1fr}
-  .filter-grid .btn{width:100%}
-  .stats-grid{grid-template-columns:1fr;gap:9px}
-  .stat-card{padding:12px 10px;gap:9px}
-  .stat-icon{width:35px;height:35px;font-size:16px}
-  .stat-number{font-size:20px}
-  .action-row{align-items:stretch}
-  .action-left,.action-right{width:100%}
-  .action-row .btn{flex:1}
+@media(max-width:700px) {
+  body {
+    padding:12px;
+  }
+
+  .header {
+    padding:21px 17px;
+  }
+
+  .header h1 {
+    font-size:18px;
+  }
+
+  .brand-icon {
+    width:42px;
+    height:42px;
+  }
+
+  .panel {
+    padding:16px;
+  }
+
+  .filter-grid {
+    grid-template-columns:1fr;
+  }
+
+  .filter-grid .btn {
+    width:100%;
+  }
+
+  .dashboard-grid {
+    grid-template-columns:1fr;
+  }
+
+  .dash-panel {
+    padding:16px;
+  }
+
+  .dash-card {
+    padding:14px;
+  }
+
+  .dash-card-value {
+    font-size:24px;
+  }
+
+  .month-chart {
+    gap:6px;
+  }
+
+  .table-heading {
+    padding:16px;
+  }
+}
+
+@media(max-width:400px) {
+  .dashboard-cards {
+    gap:8px;
+  }
+
+  .dash-card {
+    padding:12px;
+  }
+
+  .dash-card-value {
+    font-size:21px;
+  }
+
+  .dash-card-label {
+    font-size:10px;
+  }
+
+  .dash-card-icon {
+    width:34px;
+    height:34px;
+    font-size:16px;
+  }
+}
+
+/* PRINT */
+
+@media print {
+  body {
+    padding:0;
+    background:white;
+  }
+
+  .header {
+    box-shadow:none;
+  }
+
+  .filter-panel,
+  .action-row,
+  .footer {
+    display:none !important;
+  }
+
+  .dash-card,
+  .dash-panel,
+  .table-panel {
+    box-shadow:none;
+    break-inside:avoid;
+  }
+
+  .table-wrap {
+    overflow:visible;
+    max-height:none;
+  }
+
+  table {
+    min-width:0;
+    font-size:9px;
+  }
+
+  th,td {
+    padding:6px 4px;
+    font-size:9px;
+    white-space:normal;
+  }
 }
 </style>
 </head>
@@ -334,11 +700,14 @@ td:nth-child(4){font-weight:700;color:var(--navy)}
 <div class="wrap">
 
 <header class="header">
+
   <div class="brand">
     <div class="brand-icon">📋</div>
     <div>
       <h1>Die Maintenance Daily Report</h1>
-      <div class="header-sub">ระบบประวัติการซ่อมบำรุงแม่พิมพ์ · TNC</div>
+      <div class="header-sub">
+        ระบบประวัติการซ่อมบำรุงแม่พิมพ์ · TNC
+      </div>
     </div>
   </div>
 
@@ -349,12 +718,16 @@ td:nth-child(4){font-weight:700;color:var(--navy)}
     </div>
     <div class="header-tag">ALL PARTS · DAILY REPORT</div>
   </div>
+
 </header>
 
-<section class="panel">
+<!-- FILTER -->
+<section class="panel filter-panel">
+
   <div class="section-title">ค้นหาและกรองข้อมูล</div>
 
   <div class="filter-grid">
+
     <label class="field">
       ค้นหาข้อมูล
       <input id="search" type="search"
@@ -371,63 +744,124 @@ td:nth-child(4){font-weight:700;color:var(--navy)}
       <input id="toDate" type="date">
     </label>
 
-    <button class="btn" id="filterBtn" type="button">⌕ ค้นหา</button>
-    <button class="btn btn-gray" id="resetBtn" type="button">ล้างตัวกรอง</button>
+    <button class="btn" id="filterBtn" type="button">
+      ⌕ ค้นหา
+    </button>
+
+    <button class="btn btn-gray" id="resetBtn" type="button">
+      ล้างตัวกรอง
+    </button>
+
   </div>
 </section>
 
-<section class="panel">
-  <div class="section-title">ภาพรวมข้อมูล</div>
+<!-- DASHBOARD -->
+<section class="dashboard-section">
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon stat-blue">📄</div>
-      <div>
-        <div class="stat-label">รายการที่แสดง</div>
-        <div class="stat-number" id="count">0</div>
-      </div>
+  <div class="dashboard-title">
+    <div>
+      <h2>📊 Maintenance Dashboard</h2>
+      <p>ภาพรวมผลการซ่อมบำรุงแม่พิมพ์ของแผนก Maintenance</p>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon stat-green">⚙</div>
-      <div>
-        <div class="stat-label">จำนวน PART</div>
-        <div class="stat-number" id="partCount">0</div>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon stat-purple">◷</div>
-      <div>
-        <div class="stat-label">เวลาซ่อมรวม (นาที)</div>
-        <div class="stat-number" id="totalDuration">0</div>
-      </div>
+    <div class="dashboard-period" id="dashboardPeriod">
+      ข้อมูลทั้งหมด
     </div>
   </div>
 
-  <div class="action-row">
-    <div class="action-left">
-      <button class="btn btn-gray" id="refreshBtn" type="button">↻ โหลดข้อมูลใหม่</button>
-      <button class="btn btn-green" id="exportBtn" type="button">↓ ส่งออก CSV</button>
+  <div class="dashboard-cards">
+
+    <div class="dash-card" style="--card-tint:#eaf3fb">
+      <div class="dash-card-top">
+        <div class="dash-card-label">รายการซ่อมทั้งหมด</div>
+        <div class="dash-card-icon">📄</div>
+      </div>
+      <div class="dash-card-value" id="count">0</div>
+      <div class="dash-card-unit">รายการซ่อม</div>
     </div>
 
-    <div class="action-right">
-      <button class="btn" id="backBtn" type="button">+ กลับไปหน้าบันทึก</button>
+    <div class="dash-card" style="--card-tint:#e8f7ef">
+      <div class="dash-card-top">
+        <div class="dash-card-label">จำนวน PART</div>
+        <div class="dash-card-icon">⚙️</div>
+      </div>
+      <div class="dash-card-value" id="partCount">0</div>
+      <div class="dash-card-unit">PART ที่มีประวัติการซ่อม</div>
+    </div>
+
+    <div class="dash-card" style="--card-tint:#f0edff">
+      <div class="dash-card-top">
+        <div class="dash-card-label">เวลาซ่อมรวม</div>
+        <div class="dash-card-icon">⏱️</div>
+      </div>
+      <div class="dash-card-value" id="totalDuration">0</div>
+      <div class="dash-card-unit">นาที</div>
+    </div>
+
+    <div class="dash-card" style="--card-tint:#fff3e8">
+      <div class="dash-card-top">
+        <div class="dash-card-label">เวลาเฉลี่ยต่อรายการ</div>
+        <div class="dash-card-icon">📈</div>
+      </div>
+      <div class="dash-card-value" id="averageDuration">0</div>
+      <div class="dash-card-unit">นาที / รายการที่มีเวลาบันทึก</div>
+    </div>
+
+  </div>
+
+  <div class="dashboard-grid">
+
+    <div class="dash-panel">
+      <h3>📅 แนวโน้มงานซ่อมรายเดือน</h3>
+      <div class="dash-panel-sub">
+        จำนวนรายการซ่อมย้อนหลัง 6 เดือน
+      </div>
+      <div class="month-chart" id="monthlyChart">
+        <div class="rank-empty">กำลังโหลดข้อมูล...</div>
+      </div>
+    </div>
+
+    <div class="dash-panel">
+      <h3>🏆 PART ที่มีการซ่อมมากที่สุด</h3>
+      <div class="dash-panel-sub">
+        5 อันดับ PART ที่มีรายการซ่อมสูงสุด
+      </div>
+      <div class="rank-list" id="topParts">
+        <div class="rank-empty">กำลังโหลดข้อมูล...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="dash-panel">
+    <h3>🔧 สาเหตุการซ่อมที่พบบ่อย</h3>
+    <div class="dash-panel-sub">
+      5 อันดับสาเหตุการซ่อมจากข้อมูลที่แสดง
+    </div>
+    <div class="rank-list" id="topCauses">
+      <div class="rank-empty">กำลังโหลดข้อมูล...</div>
     </div>
   </div>
+
 </section>
 
+<!-- TABLE -->
 <section class="table-panel">
+
   <div class="table-heading">
     <div>
       <h2>รายการประวัติ Daily Report</h2>
       <p>ข้อมูลการซ่อมบำรุงทั้งหมดจากฐานข้อมูลส่วนกลาง</p>
     </div>
-    <div class="result-label" id="resultLabel">0 รายการ</div>
+
+    <div class="result-label" id="resultLabel">
+      0 รายการ
+    </div>
   </div>
 
   <div class="table-wrap">
     <table>
+
       <thead>
         <tr>
           <th>#</th>
@@ -447,10 +881,42 @@ td:nth-child(4){font-weight:700;color:var(--navy)}
       </thead>
 
       <tbody id="historyBody">
-        <tr><td colspan="13" class="empty">กำลังโหลดข้อมูล...</td></tr>
+        <tr>
+          <td colspan="13" class="empty">
+            กำลังโหลดข้อมูล...
+          </td>
+        </tr>
       </tbody>
+
     </table>
   </div>
+
+  <div class="panel" style="margin:0;border-radius:0;box-shadow:none;">
+    <div class="action-row">
+
+      <div class="action-left">
+        <button class="btn btn-gray" id="refreshBtn" type="button">
+          ↻ โหลดข้อมูลใหม่
+        </button>
+
+        <button class="btn btn-green" id="exportBtn" type="button">
+          ↓ ส่งออก CSV
+        </button>
+      </div>
+
+      <div class="action-right">
+        <button class="btn" id="printBtn" type="button">
+          🖨 พิมพ์รายงาน
+        </button>
+
+        <button class="btn" id="backBtn" type="button">
+          + กลับไปหน้าบันทึก
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </section>
 
 <footer class="footer">
@@ -466,8 +932,11 @@ td:nth-child(4){font-weight:700;color:var(--navy)}
 // 1. SUPABASE CONFIG
 // ========================================
 
-const SUPABASE_URL = "https://enmzfxdswzhatvcenrds.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_DkoWB0IDDgodellT5vgcLQ_YdqIhKdI";
+const SUPABASE_URL =
+  "https://enmzfxdswzhatvcenrds.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_DkoWB0IDDgodellT5vgcLQ_YdqIhKdI";
 
 if (!window.supabase) {
   alert("โหลด Supabase ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต");
@@ -555,11 +1024,15 @@ function dateToISO(value) {
 
   const first = Number(match[1]);
   const second = Number(match[2]);
+
   let year = match[3];
 
-  if (year.length === 2) year = "20" + year;
+  if (year.length === 2) {
+    year = "20" + year;
+  }
 
-  let day, month;
+  let day;
+  let month;
 
   if (first > 12) {
     day = first;
@@ -568,8 +1041,13 @@ function dateToISO(value) {
     month = first;
     day = second;
   } else {
+    // รูปแบบวันที่ของระบบนี้ใช้ DD/MM/YY
     day = first;
     month = second;
+  }
+
+  if (month < 1 || month > 12 || day < 1 || day > 31) {
+    return "";
   }
 
   return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
@@ -580,7 +1058,7 @@ function recordDate(record) {
 }
 
 // ========================================
-// 5. แปลงเวลาที่บันทึกไว้ให้เป็นนาที
+// 5. DURATION
 // ========================================
 
 function getDurationMinutes(value) {
@@ -588,21 +1066,24 @@ function getDurationMinutes(value) {
     return null;
   }
 
-  // ข้อมูลใหม่เก็บเป็นตัวเลขนาที เช่น "150"
-  const numeric = Number(value);
+  const text = String(value).trim();
 
-  if (Number.isFinite(numeric) && numeric >= 0) {
-    return numeric;
+  // ตัวเลขนาที เช่น 150
+  if (/^\d+(?:\.\d+)?$/.test(text)) {
+    const numeric = Number(text);
+    return Number.isFinite(numeric) && numeric >= 0
+      ? numeric
+      : null;
   }
 
-  // รองรับข้อมูลเก่าที่เคยเก็บเป็น "2 ชม. 30 นาที"
-  const oldFormat = String(value).match(
-    /(?:(\d+)\s*ชม\.?)?\s*(?:(\d+)\s*นาที)?/
+  // ข้อมูลเก่า เช่น 2 ชม. 30 นาที
+  const oldFormat = text.match(
+    /(?:(\d+(?:\.\d+)?)\s*ชม\.?)?\s*(?:(\d+(?:\.\d+)?)\s*นาที)?/
   );
 
   if (oldFormat && (oldFormat[1] || oldFormat[2])) {
     return (Number(oldFormat[1] || 0) * 60) +
-           Number(oldFormat[2] || 0);
+      Number(oldFormat[2] || 0);
   }
 
   return null;
@@ -617,7 +1098,7 @@ function formatDuration(value) {
 }
 
 // ========================================
-// 6. LOAD DATA
+// 6. LOAD DATA FROM SUPABASE
 // ========================================
 
 async function load() {
@@ -667,6 +1148,9 @@ async function load() {
       </tr>
     `;
 
+    document.getElementById("dashboardPeriod").textContent =
+      "โหลดข้อมูลไม่สำเร็จ";
+
   } finally {
     refreshBtn.disabled = false;
     refreshBtn.textContent = "↻ โหลดข้อมูลใหม่";
@@ -674,7 +1158,186 @@ async function load() {
 }
 
 // ========================================
-// 7. SEARCH AND FILTER
+// 7. DASHBOARD FUNCTIONS
+// ========================================
+
+function countBy(records, field) {
+  const result = {};
+
+  records.forEach(record => {
+    const raw = record[field];
+
+    if (!raw) return;
+
+    String(raw)
+      .split(/[,;\n]+/)
+      .map(v => v.trim())
+      .filter(Boolean)
+      .forEach(value => {
+        result[value] = (result[value] || 0) + 1;
+      });
+  });
+
+  return Object.entries(result)
+    .sort((a, b) => b[1] - a[1]);
+}
+
+function renderRankList(elementId, items) {
+  const element = document.getElementById(elementId);
+
+  if (!items.length) {
+    element.innerHTML =
+      '<div class="rank-empty">ยังไม่มีข้อมูล</div>';
+    return;
+  }
+
+  const top = items.slice(0, 5);
+  const max = Math.max(...top.map(item => item[1]), 1);
+
+  element.innerHTML = top.map(([name, value]) => {
+    const percent = Math.max(3, value / max * 100);
+
+    return `
+      <div class="rank-item">
+        <div class="rank-head">
+          <div class="rank-name" title="${safe(name)}">
+            ${safe(name)}
+          </div>
+          <div class="rank-number">
+            ${value.toLocaleString("th-TH")} รายการ
+          </div>
+        </div>
+        <div class="rank-track">
+          <div class="rank-fill" style="width:${percent}%"></div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderMonthlyChart(records) {
+  const element = document.getElementById("monthlyChart");
+  const now = new Date();
+
+  const months = [];
+
+  for (let i = 5; i >= 0; i--) {
+    const date = new Date(
+      now.getFullYear(),
+      now.getMonth() - i,
+      1
+    );
+
+    const key =
+      date.getFullYear() + "-" +
+      String(date.getMonth() + 1).padStart(2, "0");
+
+    months.push({
+      key,
+      label: date.toLocaleDateString("th-TH", {
+        month: "short"
+      }),
+      count: 0
+    });
+  }
+
+  records.forEach(record => {
+    const iso = dateToISO(recordDate(record));
+
+    if (!iso) return;
+
+    const key = iso.slice(0, 7);
+    const month = months.find(m => m.key === key);
+
+    if (month) month.count++;
+  });
+
+  const max = Math.max(...months.map(m => m.count), 1);
+
+  element.innerHTML = months.map(month => {
+    const height = month.count
+      ? Math.max(4, month.count / max * 100)
+      : 0;
+
+    return `
+      <div class="month-column">
+        <div class="month-value">
+          ${month.count.toLocaleString("th-TH")}
+        </div>
+        <div class="month-bar-area">
+          <div
+            class="month-bar"
+            style="height:${height}%"
+            title="${month.count} รายการ">
+          </div>
+        </div>
+        <div class="month-label">${month.label}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function updateDashboard(records) {
+  const total = records.reduce((sum, record) => {
+    return sum + (getDurationMinutes(record.workDuration) ?? 0);
+  }, 0);
+
+  const validDurations = records
+    .map(record => getDurationMinutes(record.workDuration))
+    .filter(value => value !== null);
+
+  const average = validDurations.length
+    ? total / validDurations.length
+    : 0;
+
+  document.getElementById("count").textContent =
+    records.length.toLocaleString("th-TH");
+
+  document.getElementById("partCount").textContent =
+    new Set(records.map(r => r.partNo).filter(Boolean))
+      .size.toLocaleString("th-TH");
+
+  document.getElementById("totalDuration").textContent =
+    total.toLocaleString("th-TH");
+
+  document.getElementById("averageDuration").textContent =
+    Math.round(average).toLocaleString("th-TH");
+
+  const from = document.getElementById("fromDate").value;
+  const to = document.getElementById("toDate").value;
+  const search = document.getElementById("search").value.trim();
+
+  let period = "ข้อมูลทั้งหมด";
+
+  if (from && to) {
+    period = `${formatDate(from)} - ${formatDate(to)}`;
+  } else if (from) {
+    period = `ตั้งแต่ ${formatDate(from)}`;
+  } else if (to) {
+    period = `ถึง ${formatDate(to)}`;
+  }
+
+  if (search) {
+    period += " · ผลการค้นหา";
+  }
+
+  document.getElementById("dashboardPeriod").textContent = period;
+
+  renderMonthlyChart(records);
+
+  renderRankList(
+    "topParts",
+    countBy(records, "partNo")
+  );
+
+  renderRankList(
+    "topCauses",
+    countBy(records, "causeRepair")
+  );
+}
+
+// ========================================
+// 8. SEARCH AND FILTER
 // ========================================
 
 function render() {
@@ -705,18 +1368,8 @@ function render() {
     );
   });
 
-  const totalMinutes = visibleRecords.reduce((sum, r) => {
-    return sum + (getDurationMinutes(r.workDuration) ?? 0);
-  }, 0);
-
-  document.getElementById("count").textContent =
-    visibleRecords.length;
-
-  document.getElementById("partCount").textContent =
-    new Set(visibleRecords.map(r => r.partNo).filter(Boolean)).size;
-
-  document.getElementById("totalDuration").textContent =
-    totalMinutes.toLocaleString("th-TH");
+  // อัปเดต Dashboard จากข้อมูลที่ผ่านตัวกรอง
+  updateDashboard(visibleRecords);
 
   document.getElementById("resultLabel").textContent =
     `${visibleRecords.length.toLocaleString("th-TH")} รายการ`;
@@ -747,7 +1400,7 @@ function render() {
 }
 
 // ========================================
-// 8. FILTER EVENTS
+// 9. FILTER EVENTS
 // ========================================
 
 document.getElementById("filterBtn")
@@ -763,7 +1416,7 @@ document.getElementById("toDate")
   .addEventListener("change", render);
 
 // ========================================
-// 9. RESET FILTER
+// 10. RESET FILTER
 // ========================================
 
 document.getElementById("resetBtn")
@@ -775,14 +1428,14 @@ document.getElementById("resetBtn")
   });
 
 // ========================================
-// 10. REFRESH
+// 11. REFRESH
 // ========================================
 
 document.getElementById("refreshBtn")
   .addEventListener("click", load);
 
 // ========================================
-// 11. BACK TO DAILY REPORT
+// 12. BACK TO DAILY REPORT
 // ========================================
 
 document.getElementById("backBtn")
@@ -791,7 +1444,16 @@ document.getElementById("backBtn")
   });
 
 // ========================================
-// 12. EXPORT CSV
+// 13. PRINT
+// ========================================
+
+document.getElementById("printBtn")
+  .addEventListener("click", () => {
+    window.print();
+  });
+
+// ========================================
+// 14. EXPORT CSV
 // ========================================
 
 function csvCell(value) {
@@ -800,6 +1462,7 @@ function csvCell(value) {
 
 document.getElementById("exportBtn")
   .addEventListener("click", () => {
+
     if (!visibleRecords.length) {
       alert("ไม่มีข้อมูลสำหรับส่งออก");
       return;
@@ -842,7 +1505,7 @@ document.getElementById("exportBtn")
       rows.map(row => row.map(csvCell).join(",")).join("\r\n");
 
     const blob = new Blob([csv], {
-      type: "text/csv;charset=utf-8;"
+      type:"text/csv;charset=utf-8;"
     });
 
     const url = URL.createObjectURL(blob);
@@ -860,7 +1523,7 @@ document.getElementById("exportBtn")
   });
 
 // ========================================
-// 13. START
+// 15. START
 // ========================================
 
 load();
