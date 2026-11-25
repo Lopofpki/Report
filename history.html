@@ -25,11 +25,6 @@ body{
 }
 h1{font-size:22px;margin:0 0 5px;color:var(--navy)}
 .sub{font-size:14px;color:#667788}
-.part-label{
-  display:inline-block;margin-top:10px;padding:7px 12px;
-  background:#e8f3fc;color:#1765a0;border-radius:7px;
-  font-size:13px;font-weight:bold
-}
 .tools{
   display:flex;gap:10px;flex-wrap:wrap;
   margin-top:15px;align-items:end
@@ -80,11 +75,9 @@ tbody tr:nth-child(even){background:#f8fafc}
 
 <header class="header">
   <h1>ประวัติ Die Maintenance Daily Report</h1>
-  <div class="sub" id="pageSubtitle">
-    TNC · ประวัติส่วนกลางของแผนก Maintenance
+  <div class="sub">
+    TNC · ประวัติส่วนกลางของแผนก Maintenance · รวมทุก PART
   </div>
-
-  <div id="partLabel" class="part-label" hidden></div>
 
   <div class="tools">
     <label class="field">
@@ -113,6 +106,7 @@ tbody tr:nth-child(even){background:#f8fafc}
     <div class="stat">รายการที่แสดง <b id="count">0</b></div>
     <div class="stat">เสร็จแล้ว <b id="doneCount">0</b></div>
     <div class="stat">ยังไม่เสร็จ <b id="pendingCount">0</b></div>
+    <div class="stat">จำนวน PART <b id="partCount">0</b></div>
   </div>
 
   <div class="tools">
@@ -187,33 +181,6 @@ const body = document.getElementById("historyBody");
 let allRecords = [];
 let visibleRecords = [];
 
-// อ่าน PART จาก URL เช่น ?part=P181595028
-let activePartCode =
-  new URLSearchParams(location.search).get("part")?.trim() || "";
-
-// แสดง PART ที่กำลังค้นหา
-function updatePartDisplay() {
-  const subtitle = document.getElementById("pageSubtitle");
-  const label = document.getElementById("partLabel");
-
-  if (activePartCode) {
-    subtitle.textContent =
-      "TNC · ประวัติรายงานแยกตาม PART";
-
-    label.textContent =
-      "กำลังแสดงประวัติ PART: " + activePartCode;
-
-    label.hidden = false;
-  } else {
-    subtitle.textContent =
-      "TNC · ประวัติส่วนกลางของแผนก Maintenance";
-
-    label.hidden = true;
-  }
-}
-
-updatePartDisplay();
-
 // ========================================
 // 3. ป้องกัน HTML
 // ========================================
@@ -251,7 +218,7 @@ function recordDate(record) {
 }
 
 // ========================================
-// 5. โหลดประวัติจาก Supabase
+// 5. โหลดประวัติทุก PART จาก Supabase
 // ========================================
 
 async function load() {
@@ -266,28 +233,9 @@ async function load() {
 
   try {
 
-    if (
-      !SUPABASE_URL ||
-      !SUPABASE_ANON_KEY ||
-      !SUPABASE_URL.startsWith("https://") ||
-      !SUPABASE_URL.endsWith(".supabase.co")
-    ) {
-      throw new Error(
-        "กรุณาตรวจสอบ Supabase Project URL และ Publishable key"
-      );
-    }
-
-    // สร้างคำสั่งค้นหาจากตาราง daily_reports
-    let request = supabaseClient
+    const { data, error } = await supabaseClient
       .from("daily_reports")
-      .select("*");
-
-    // ถ้ามี PART ใน URL ให้กรองจากฐานข้อมูลโดยตรง
-    if (activePartCode) {
-      request = request.eq("part_no", activePartCode);
-    }
-
-    const { data, error } = await request
+      .select("*")
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -376,6 +324,9 @@ function render() {
   document.getElementById("pendingCount").textContent =
     visibleRecords.filter(r => !r.statusDone).length;
 
+  document.getElementById("partCount").textContent =
+    new Set(visibleRecords.map(r => r.partNo).filter(Boolean)).size;
+
   if (!visibleRecords.length) {
     body.innerHTML =
       '<tr><td colspan="14" class="empty">ไม่พบข้อมูลประวัติ</td></tr>';
@@ -425,26 +376,13 @@ document.getElementById("toDate")
 // ========================================
 
 document.getElementById("resetBtn")
-  .addEventListener("click", async () => {
+  .addEventListener("click", () => {
 
     document.getElementById("search").value = "";
     document.getElementById("fromDate").value = "";
     document.getElementById("toDate").value = "";
 
-    // ล้าง PART ที่อ่านจาก URL
-    activePartCode = "";
-
-    // ลบ query string ออกจาก URL
-    history.replaceState(
-      null,
-      "",
-      location.pathname
-    );
-
-    updatePartDisplay();
-
-    // โหลดประวัติทั้งหมดใหม่
-    await load();
+    render();
 
   });
 
@@ -461,13 +399,7 @@ document.getElementById("refreshBtn")
 
 document.getElementById("backBtn")
   .addEventListener("click", () => {
-
-    const target = activePartCode
-      ? "daily-report.html?part=" + encodeURIComponent(activePartCode)
-      : "daily-report.html";
-
-    location.href = target;
-
+    location.href = "daily-report.html";
   });
 
 // ========================================
@@ -487,35 +419,17 @@ document.getElementById("exportBtn")
     }
 
     const headers = [
-      "วันที่",
-      "ลูกค้า",
-      "Part No.",
-      "Process",
-      "สาเหตุการซ่อม",
-      "สาเหตุปัญหา",
-      "รายละเอียดการซ่อม",
-      "ผู้ซ่อม",
-      "เวลาเริ่ม",
-      "เวลาเสร็จ",
-      "รวมเวลา",
-      "เสร็จ",
-      "หมายเหตุ"
+      "วันที่","ลูกค้า","Part No.","Process",
+      "สาเหตุการซ่อม","สาเหตุปัญหา","รายละเอียดการซ่อม",
+      "ผู้ซ่อม","เวลาเริ่ม","เวลาเสร็จ","รวมเวลา",
+      "เสร็จ","หมายเหตุ"
     ];
 
     const keys = [
-      "checkDate",
-      "customer",
-      "partNo",
-      "process",
-      "causeRepair",
-      "causeProblem",
-      "repairDetail",
-      "repairedBy",
-      "startTime",
-      "endTime",
-      "workDuration",
-      "statusDone",
-      "remarks"
+      "checkDate","customer","partNo","process",
+      "causeRepair","causeProblem","repairDetail",
+      "repairedBy","startTime","endTime","workDuration",
+      "statusDone","remarks"
     ];
 
     const rows = [
@@ -548,13 +462,8 @@ document.getElementById("exportBtn")
     const a = document.createElement("a");
 
     a.href = url;
-
-    const filePart = activePartCode
-      ? "_" + activePartCode.replace(/[^a-zA-Z0-9_-]/g, "_")
-      : "";
-
     a.download =
-      `TNC_Daily_Report${filePart}_${new Date().toISOString().slice(0,10)}.csv`;
+      `TNC_Daily_Report_All_PART_${new Date().toISOString().slice(0,10)}.csv`;
 
     document.body.appendChild(a);
     a.click();
