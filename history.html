@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -10,335 +10,322 @@
 
 <style>
 :root {
-  --navy: #172f4a;
-  --navy2: #203f60;
-  --blue: #2878bd;
-  --blue-light: #eaf3fb;
-  --green: #168653;
-  --orange: #c17b20;
-  --bg: #f2f5f9;
-  --white: #ffffff;
-  --text: #26384a;
-  --muted: #718096;
-  --line: #e1e8f0;
-  --shadow: 0 5px 22px rgba(25, 48, 74, .06);
+  --navy:#172f4a;
+  --navy2:#203f60;
+  --blue:#2878bd;
+  --blue-light:#eaf3fb;
+  --green:#168653;
+  --purple:#7256b5;
+  --bg:#f2f5f9;
+  --white:#ffffff;
+  --text:#26384a;
+  --muted:#718096;
+  --line:#e1e8f0;
+  --shadow:0 5px 22px rgba(25,48,74,.06);
 }
 
-* { box-sizing: border-box; }
+*{box-sizing:border-box}
 
-body {
-  margin: 0;
-  padding: 26px;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, "Noto Sans Thai", sans-serif;
+body{
+  margin:0;
+  padding:26px;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,"Noto Sans Thai",sans-serif;
 }
 
-.wrap { max-width: 1700px; margin: auto; }
+.wrap{max-width:1700px;margin:auto}
 
-.header {
-  background: linear-gradient(120deg, var(--navy), var(--navy2));
-  color: white;
-  padding: 27px 30px;
-  border-radius: 15px;
-  box-shadow: var(--shadow);
-  margin-bottom: 20px;
+.header{
+  background:linear-gradient(120deg,var(--navy),var(--navy2));
+  color:white;
+  padding:27px 30px;
+  border-radius:15px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
 }
 
-.brand { display: flex; align-items: center; gap: 14px; }
+.brand{display:flex;align-items:center;gap:14px}
 
-.brand-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(255,255,255,.13);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 25px;
+.brand-icon{
+  width:48px;
+  height:48px;
+  border-radius:12px;
+  background:rgba(255,255,255,.13);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
 }
 
-.header h1 {
-  margin: 0;
-  font-size: 23px;
-  font-weight: 700;
+.header h1{margin:0;font-size:23px;font-weight:700}
+.header-sub{color:#c7d7e8;font-size:13px;margin-top:5px}
+
+.header-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:23px;
+  padding-top:17px;
+  border-top:1px solid rgba(255,255,255,.15);
 }
 
-.header-sub { color: #c7d7e8; font-size: 13px; margin-top: 5px; }
-
-.header-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 23px;
-  padding-top: 17px;
-  border-top: 1px solid rgba(255,255,255,.15);
+.header-tag{
+  font-size:12px;
+  color:#dce9f6;
+  display:flex;
+  align-items:center;
+  gap:7px;
 }
 
-.header-tag {
-  font-size: 12px;
-  color: #dce9f6;
-  display: flex;
-  align-items: center;
-  gap: 7px;
+.live-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#52d69b;
 }
 
-.live-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #52d69b;
+.panel{
+  background:var(--white);
+  padding:23px;
+  border-radius:13px;
+  box-shadow:var(--shadow);
+  margin-bottom:18px;
 }
 
-.panel {
-  background: var(--white);
-  padding: 23px;
-  border-radius: 13px;
-  box-shadow: var(--shadow);
-  margin-bottom: 18px;
+.section-title{
+  font-size:16px;
+  font-weight:700;
+  color:var(--navy);
+  margin-bottom:17px;
+  display:flex;
+  align-items:center;
+  gap:9px;
 }
 
-.section-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 17px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
+.section-title::before{
+  content:"";
+  width:4px;
+  height:19px;
+  background:var(--blue);
+  border-radius:5px;
 }
 
-.section-title::before {
-  content: "";
-  width: 4px;
-  height: 19px;
-  background: var(--blue);
-  border-radius: 5px;
+.filter-grid{
+  display:grid;
+  grid-template-columns:minmax(220px,2fr) 1fr 1fr auto auto;
+  gap:12px;
+  align-items:end;
 }
 
-.filter-grid {
-  display: grid;
-  grid-template-columns: minmax(220px, 2fr) 1fr 1fr auto auto;
-  gap: 12px;
-  align-items: end;
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  font-size:12px;
+  font-weight:700;
+  color:#526477;
+  min-width:0;
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #526477;
-  min-width: 0;
+input{
+  width:100%;
+  min-width:0;
+  height:42px;
+  padding:0 12px;
+  border:1px solid #d6e0e9;
+  border-radius:7px;
+  background:#fbfcfe;
+  color:var(--text);
+  font:inherit;
+  font-size:13px;
+  outline:none;
 }
 
-input {
-  width: 100%;
-  min-width: 0;
-  height: 42px;
-  padding: 0 12px;
-  border: 1px solid #d6e0e9;
-  border-radius: 7px;
-  background: #fbfcfe;
-  color: var(--text);
-  font: inherit;
-  font-size: 13px;
-  outline: none;
+input:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(40,120,189,.1);
+  background:white;
 }
 
-input:focus {
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(40,120,189,.1);
-  background: white;
+.btn{
+  border:0;
+  border-radius:7px;
+  padding:0 16px;
+  height:42px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  color:white;
+  background:var(--blue);
+  transition:.2s;
+  white-space:nowrap;
 }
 
-.btn {
-  border: 0;
-  border-radius: 7px;
-  padding: 0 16px;
-  height: 42px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  color: white;
-  background: var(--blue);
-  transition: .2s;
-  white-space: nowrap;
+.btn:hover{filter:brightness(.94);transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-gray{background:#64748b}
+.btn-green{background:var(--green)}
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-bottom:21px;
 }
 
-.btn:hover { filter: brightness(.94); transform: translateY(-1px); }
-.btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
-.btn-gray { background: #64748b; }
-.btn-green { background: var(--green); }
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 21px;
+.stat-card{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:17px 18px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-width:0;
 }
 
-.stat-card {
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 11px;
-  padding: 17px 18px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-width: 0;
+.stat-icon{
+  width:43px;
+  height:43px;
+  flex-shrink:0;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
 }
 
-.stat-icon {
-  width: 43px;
-  height: 43px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
+.stat-blue{background:#eaf3fb}
+.stat-green{background:#e8f7ef}
+.stat-purple{background:#f0edff}
+
+.stat-label{font-size:12px;color:var(--muted);margin-bottom:5px}
+
+.stat-number{
+  font-size:23px;
+  line-height:1;
+  font-weight:700;
+  color:var(--navy);
+  font-variant-numeric:tabular-nums;
 }
 
-.stat-blue { background: #eaf3fb; }
-.stat-green { background: #e8f7ef; }
-.stat-orange { background: #fff4e5; }
-.stat-purple { background: #f0edff; }
-
-.stat-label { font-size: 12px; color: var(--muted); margin-bottom: 5px; }
-
-.stat-number {
-  font-size: 23px;
-  line-height: 1;
-  font-weight: 700;
-  color: var(--navy);
-  font-variant-numeric: tabular-nums;
+.action-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  padding-top:17px;
+  border-top:1px solid var(--line);
 }
 
-.action-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding-top: 17px;
-  border-top: 1px solid var(--line);
+.action-left,.action-right{display:flex;gap:9px;flex-wrap:wrap}
+
+.table-panel{
+  background:white;
+  border-radius:13px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
 }
 
-.action-left, .action-right { display: flex; gap: 9px; flex-wrap: wrap; }
-
-.table-panel {
-  background: white;
-  border-radius: 13px;
-  box-shadow: var(--shadow);
-  overflow: hidden;
+.table-heading{
+  padding:20px 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  border-bottom:1px solid var(--line);
 }
 
-.table-heading {
-  padding: 20px 22px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  border-bottom: 1px solid var(--line);
+.table-heading h2{margin:0;color:var(--navy);font-size:16px}
+.table-heading p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+
+.result-label{
+  font-size:12px;
+  color:var(--blue);
+  background:var(--blue-light);
+  padding:7px 12px;
+  border-radius:20px;
+  font-weight:700;
 }
 
-.table-heading h2 { margin: 0; color: var(--navy); font-size: 16px; }
-.table-heading p { margin: 5px 0 0; font-size: 12px; color: var(--muted); }
+.table-wrap{width:100%;overflow:auto;max-height:68vh}
 
-.result-label {
-  font-size: 12px;
-  color: var(--blue);
-  background: var(--blue-light);
-  padding: 7px 12px;
-  border-radius: 20px;
-  font-weight: 700;
+table{
+  border-collapse:separate;
+  border-spacing:0;
+  width:100%;
+  min-width:1350px;
 }
 
-.table-wrap { width: 100%; overflow: auto; max-height: 68vh; }
-
-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  width: 100%;
-  min-width: 1450px;
+th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:var(--navy);
+  color:white;
+  padding:14px 11px;
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+  border-right:1px solid rgba(255,255,255,.09);
 }
 
-th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: var(--navy);
-  color: white;
-  padding: 14px 11px;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-  border-right: 1px solid rgba(255,255,255,.09);
+td{
+  padding:12px 10px;
+  text-align:center;
+  font-size:12px;
+  white-space:nowrap;
+  border-bottom:1px solid var(--line);
+  color:#435569;
 }
 
-td {
-  padding: 12px 10px;
-  text-align: center;
-  font-size: 12px;
-  white-space: nowrap;
-  border-bottom: 1px solid var(--line);
-  color: #435569;
+tbody tr:nth-child(even){background:#f8fafc}
+tbody tr:hover{background:#edf5fc}
+td:nth-child(4){font-weight:700;color:var(--navy)}
+
+.duration{
+  font-weight:700;
+  color:var(--green);
 }
 
-tbody tr:nth-child(even) { background: #f8fafc; }
-tbody tr:hover { background: #edf5fc; }
-td:nth-child(4) { font-weight: 700; color: var(--navy); }
-
-.status {
-  display: inline-block;
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
+.empty{
+  text-align:center;
+  padding:48px 20px !important;
+  color:var(--muted);
+  font-size:13px;
 }
 
-.done { background: #e7f7ee; color: #168044; }
-.pending { background: #fff4e3; color: #a66b16; }
-
-.empty {
-  text-align: center;
-  padding: 48px 20px !important;
-  color: var(--muted);
-  font-size: 13px;
+.footer{
+  text-align:center;
+  color:#94a3b8;
+  font-size:11px;
+  padding:22px 0 5px;
 }
 
-.footer {
-  text-align: center;
-  color: #94a3b8;
-  font-size: 11px;
-  padding: 22px 0 5px;
+@media(max-width:1050px){
+  .filter-grid{grid-template-columns:repeat(2,1fr)}
 }
 
-@media (max-width: 1050px) {
-  .filter-grid { grid-template-columns: repeat(2, 1fr); }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 600px) {
-  body { padding: 12px; }
-  .header { padding: 21px 17px; }
-  .header h1 { font-size: 18px; }
-  .brand-icon { width: 42px; height: 42px; }
-  .panel { padding: 16px; }
-  .filter-grid { grid-template-columns: 1fr; }
-  .filter-grid .btn { width: 100%; }
-  .stats-grid { gap: 9px; }
-  .stat-card { padding: 12px 10px; gap: 9px; }
-  .stat-icon { width: 35px; height: 35px; font-size: 16px; }
-  .stat-number { font-size: 20px; }
-  .action-row { align-items: stretch; }
-  .action-left, .action-right { width: 100%; }
-  .action-row .btn { flex: 1; }
+@media(max-width:600px){
+  body{padding:12px}
+  .header{padding:21px 17px}
+  .header h1{font-size:18px}
+  .brand-icon{width:42px;height:42px}
+  .panel{padding:16px}
+  .filter-grid{grid-template-columns:1fr}
+  .filter-grid .btn{width:100%}
+  .stats-grid{grid-template-columns:1fr;gap:9px}
+  .stat-card{padding:12px 10px;gap:9px}
+  .stat-icon{width:35px;height:35px;font-size:16px}
+  .stat-number{font-size:20px}
+  .action-row{align-items:stretch}
+  .action-left,.action-right{width:100%}
+  .action-row .btn{flex:1}
 }
 </style>
 </head>
@@ -402,26 +389,18 @@ td:nth-child(4) { font-weight: 700; color: var(--navy); }
     </div>
 
     <div class="stat-card">
-      <div class="stat-icon stat-green">✓</div>
-      <div>
-        <div class="stat-label">เสร็จแล้ว</div>
-        <div class="stat-number" id="doneCount">0</div>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon stat-orange">◷</div>
-      <div>
-        <div class="stat-label">ยังไม่เสร็จ</div>
-        <div class="stat-number" id="pendingCount">0</div>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon stat-purple">⚙</div>
+      <div class="stat-icon stat-green">⚙</div>
       <div>
         <div class="stat-label">จำนวน PART</div>
         <div class="stat-number" id="partCount">0</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-purple">◷</div>
+      <div>
+        <div class="stat-label">เวลาซ่อมรวม (นาที)</div>
+        <div class="stat-number" id="totalDuration">0</div>
       </div>
     </div>
   </div>
@@ -462,14 +441,13 @@ td:nth-child(4) { font-weight: 700; color: var(--navy); }
           <th>ผู้ซ่อม</th>
           <th>เวลาเริ่ม</th>
           <th>เวลาเสร็จ</th>
-          <th>รวมเวลา</th>
-          <th>สถานะ</th>
+          <th>รวมเวลา (นาที)</th>
           <th>หมายเหตุ</th>
         </tr>
       </thead>
 
       <tbody id="historyBody">
-        <tr><td colspan="14" class="empty">กำลังโหลดข้อมูล...</td></tr>
+        <tr><td colspan="13" class="empty">กำลังโหลดข้อมูล...</td></tr>
       </tbody>
     </table>
   </div>
@@ -516,33 +494,29 @@ let visibleRecords = [];
 
 function safe(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
   }[c]));
 }
 
 // ========================================
-// 4. DATE FORMAT DD/MM/YY
+// 4. DATE FORMAT
 // ========================================
 
-// แปลงวันที่จากฐานข้อมูลเป็น DD/MM/YY
-// รองรับ YYYY-MM-DD, DD/MM/YY และ MM/DD/YY
 function formatDate(value) {
   if (!value) return "";
 
   const str = String(value).trim();
 
-  // YYYY-MM-DD หรือ YYYY-MM-DDTHH:mm:ss
   let match = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
 
   if (match) {
-    return `${match[3].padStart(2, "0")}/${match[2].padStart(2, "0")}/${match[1].slice(-2)}`;
+    return `${match[3].padStart(2,"0")}/${match[2].padStart(2,"0")}/${match[1].slice(-2)}`;
   }
 
-  // MM/DD/YY หรือ MM/DD/YYYY
   match = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
 
   if (match) {
@@ -550,24 +524,20 @@ function formatDate(value) {
     const second = Number(match[2]);
     const year = match[3].slice(-2);
 
-    // หากตัวแรกเกิน 12 แสดงว่าเป็น DD/MM/YY อยู่แล้ว
     if (first > 12) {
-      return `${String(first).padStart(2, "0")}/${String(second).padStart(2, "0")}/${year}`;
+      return `${String(first).padStart(2,"0")}/${String(second).padStart(2,"0")}/${year}`;
     }
 
-    // หากตัวที่สองเกิน 12 แสดงว่าเป็น MM/DD/YY
     if (second > 12) {
-      return `${String(second).padStart(2, "0")}/${String(first).padStart(2, "0")}/${year}`;
+      return `${String(second).padStart(2,"0")}/${String(first).padStart(2,"0")}/${year}`;
     }
 
-    // กรณีวันที่กำกวม ให้ยึดรูปแบบเดิมของระบบเป็น DD/MM/YY
-    return `${String(first).padStart(2, "0")}/${String(second).padStart(2, "0")}/${year}`;
+    return `${String(first).padStart(2,"0")}/${String(second).padStart(2,"0")}/${year}`;
   }
 
   return str;
 }
 
-// ใช้วันที่มาตรฐาน YYYY-MM-DD สำหรับกรองวันที่
 function dateToISO(value) {
   if (!value) return "";
 
@@ -576,7 +546,7 @@ function dateToISO(value) {
   let match = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
 
   if (match) {
-    return `${match[1]}-${match[2].padStart(2, "0")}-${match[3].padStart(2, "0")}`;
+    return `${match[1]}-${match[2].padStart(2,"0")}-${match[3].padStart(2,"0")}`;
   }
 
   match = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/);
@@ -598,12 +568,11 @@ function dateToISO(value) {
     month = first;
     day = second;
   } else {
-    // วันที่กำกวม ยึด DD/MM/YY
     day = first;
     month = second;
   }
 
-  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
 }
 
 function recordDate(record) {
@@ -611,7 +580,44 @@ function recordDate(record) {
 }
 
 // ========================================
-// 5. LOAD DATA
+// 5. แปลงเวลาที่บันทึกไว้ให้เป็นนาที
+// ========================================
+
+function getDurationMinutes(value) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  // ข้อมูลใหม่เก็บเป็นตัวเลขนาที เช่น "150"
+  const numeric = Number(value);
+
+  if (Number.isFinite(numeric) && numeric >= 0) {
+    return numeric;
+  }
+
+  // รองรับข้อมูลเก่าที่เคยเก็บเป็น "2 ชม. 30 นาที"
+  const oldFormat = String(value).match(
+    /(?:(\d+)\s*ชม\.?)?\s*(?:(\d+)\s*นาที)?/
+  );
+
+  if (oldFormat && (oldFormat[1] || oldFormat[2])) {
+    return (Number(oldFormat[1] || 0) * 60) +
+           Number(oldFormat[2] || 0);
+  }
+
+  return null;
+}
+
+function formatDuration(value) {
+  const minutes = getDurationMinutes(value);
+
+  if (minutes === null) return "--";
+
+  return `${minutes.toLocaleString("th-TH")} นาที`;
+}
+
+// ========================================
+// 6. LOAD DATA
 // ========================================
 
 async function load() {
@@ -621,7 +627,7 @@ async function load() {
   refreshBtn.textContent = "กำลังโหลด...";
 
   body.innerHTML =
-    '<tr><td colspan="14" class="empty">กำลังโหลดข้อมูลจากฐานข้อมูลกลาง...</td></tr>';
+    '<tr><td colspan="13" class="empty">กำลังโหลดข้อมูลจากฐานข้อมูลกลาง...</td></tr>';
 
   try {
     const { data, error } = await supabaseClient
@@ -645,7 +651,6 @@ async function load() {
       startTime: r.start_time,
       endTime: r.end_time,
       workDuration: r.work_duration,
-      statusDone: r.status_done,
       remarks: r.remarks
     }));
 
@@ -656,7 +661,7 @@ async function load() {
 
     body.innerHTML = `
       <tr>
-        <td colspan="14" class="empty">
+        <td colspan="13" class="empty">
           โหลดข้อมูลไม่สำเร็จ: ${safe(error.message)}
         </td>
       </tr>
@@ -669,7 +674,7 @@ async function load() {
 }
 
 // ========================================
-// 6. SEARCH AND FILTER
+// 7. SEARCH AND FILTER
 // ========================================
 
 function render() {
@@ -700,24 +705,25 @@ function render() {
     );
   });
 
+  const totalMinutes = visibleRecords.reduce((sum, r) => {
+    return sum + (getDurationMinutes(r.workDuration) ?? 0);
+  }, 0);
+
   document.getElementById("count").textContent =
     visibleRecords.length;
 
-  document.getElementById("doneCount").textContent =
-    visibleRecords.filter(r => r.statusDone === true).length;
-
-  document.getElementById("pendingCount").textContent =
-    visibleRecords.filter(r => r.statusDone !== true).length;
-
   document.getElementById("partCount").textContent =
     new Set(visibleRecords.map(r => r.partNo).filter(Boolean)).size;
+
+  document.getElementById("totalDuration").textContent =
+    totalMinutes.toLocaleString("th-TH");
 
   document.getElementById("resultLabel").textContent =
     `${visibleRecords.length.toLocaleString("th-TH")} รายการ`;
 
   if (!visibleRecords.length) {
     body.innerHTML =
-      '<tr><td colspan="14" class="empty">ไม่พบข้อมูลประวัติ</td></tr>';
+      '<tr><td colspan="13" class="empty">ไม่พบข้อมูลประวัติ</td></tr>';
     return;
   }
 
@@ -734,19 +740,14 @@ function render() {
       <td>${safe(r.repairedBy)}</td>
       <td>${safe(r.startTime)}</td>
       <td>${safe(r.endTime)}</td>
-      <td>${safe(r.workDuration || "--:--")}</td>
-      <td>
-        <span class="status ${r.statusDone === true ? "done" : "pending"}">
-          ${r.statusDone === true ? "เสร็จแล้ว" : "ยังไม่เสร็จ"}
-        </span>
-      </td>
+      <td class="duration">${safe(formatDuration(r.workDuration))}</td>
       <td>${safe(r.remarks)}</td>
     </tr>
   `).join("");
 }
 
 // ========================================
-// 7. FILTER EVENTS
+// 8. FILTER EVENTS
 // ========================================
 
 document.getElementById("filterBtn")
@@ -762,7 +763,7 @@ document.getElementById("toDate")
   .addEventListener("change", render);
 
 // ========================================
-// 8. RESET FILTER
+// 9. RESET FILTER
 // ========================================
 
 document.getElementById("resetBtn")
@@ -774,14 +775,14 @@ document.getElementById("resetBtn")
   });
 
 // ========================================
-// 9. REFRESH
+// 10. REFRESH
 // ========================================
 
 document.getElementById("refreshBtn")
   .addEventListener("click", load);
 
 // ========================================
-// 10. BACK TO DAILY REPORT
+// 11. BACK TO DAILY REPORT
 // ========================================
 
 document.getElementById("backBtn")
@@ -790,7 +791,7 @@ document.getElementById("backBtn")
   });
 
 // ========================================
-// 11. EXPORT CSV
+// 12. EXPORT CSV
 // ========================================
 
 function csvCell(value) {
@@ -805,10 +806,18 @@ document.getElementById("exportBtn")
     }
 
     const headers = [
-      "วันที่", "ลูกค้า", "Part No.", "Process",
-      "สาเหตุการซ่อม", "สาเหตุปัญหา", "รายละเอียดการซ่อม",
-      "ผู้ซ่อม", "เวลาเริ่ม", "เวลาเสร็จ", "รวมเวลา",
-      "สถานะ", "หมายเหตุ"
+      "วันที่",
+      "ลูกค้า",
+      "Part No.",
+      "Process",
+      "สาเหตุการซ่อม",
+      "สาเหตุปัญหา",
+      "รายละเอียดการซ่อม",
+      "ผู้ซ่อม",
+      "เวลาเริ่ม",
+      "เวลาเสร็จ",
+      "รวมเวลา (นาที)",
+      "หมายเหตุ"
     ];
 
     const rows = [
@@ -824,8 +833,7 @@ document.getElementById("exportBtn")
         r.repairedBy,
         r.startTime,
         r.endTime,
-        r.workDuration,
-        r.statusDone === true ? "เสร็จแล้ว" : "ยังไม่เสร็จ",
+        getDurationMinutes(r.workDuration) ?? "",
         r.remarks
       ])
     ];
@@ -852,7 +860,7 @@ document.getElementById("exportBtn")
   });
 
 // ========================================
-// 12. START
+// 13. START
 // ========================================
 
 load();
@@ -860,4 +868,3 @@ load();
 </script>
 </body>
 </html>
-```
