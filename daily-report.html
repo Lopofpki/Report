@@ -1,12 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#142b45">
 <title>Die Maintenance Daily Report | TNC</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -16,17 +14,18 @@
   --blue:#2878bd;
   --blue-light:#eaf3fb;
   --green:#168653;
+  --orange:#e58a26;
+  --red:#d94b4b;
   --bg:#f1f4f8;
-  --white:#fff;
+  --surface:#fff;
+  --surface2:#f8fafc;
   --line:#dce4ed;
   --text:#26384a;
   --muted:#718096;
   --shadow:0 5px 22px rgba(22,43,68,.07);
 }
 
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 html{
   width:100%;
@@ -37,39 +36,39 @@ html{
 
 body{
   margin:0;
-  padding:26px;
+  padding:24px;
   width:100%;
   min-height:100vh;
   background:var(--bg);
   font-family:Arial,"Noto Sans Thai",sans-serif;
   color:var(--text);
+  transition:background .2s,color .2s;
 }
 
-button,input{
-  font-family:inherit;
+body.dark{
+  --bg:#101923;
+  --surface:#1b2938;
+  --surface2:#243446;
+  --line:#34475a;
+  --text:#e5edf5;
+  --muted:#a0afbf;
+  --blue-light:#233e56;
+  --shadow:0 5px 22px rgba(0,0,0,.18);
 }
 
-button{
-  -webkit-tap-highlight-color:transparent;
-}
+button,input{font-family:inherit}
+button{cursor:pointer}
+.wrap{width:100%;max-width:1700px;margin:auto}
 
-.wrap{
-  width:100%;
-  max-width:1700px;
-  margin:0 auto;
-}
-
-/* =====================================
-   HEADER
-===================================== */
+/* HEADER */
 
 .header{
   background:linear-gradient(120deg,var(--navy),var(--navy2));
   color:white;
-  padding:26px 28px;
+  padding:25px 27px;
   border-radius:14px;
   box-shadow:var(--shadow);
-  margin-bottom:20px;
+  margin-bottom:18px;
 }
 
 .header-top{
@@ -77,52 +76,42 @@ button{
   justify-content:space-between;
   align-items:center;
   flex-wrap:wrap;
-  gap:15px;
+  gap:14px;
 }
 
 .brand{
   display:flex;
   align-items:center;
-  gap:14px;
-  min-width:0;
+  gap:13px;
 }
 
 .brand-icon{
-  width:48px;
-  height:48px;
-  flex-shrink:0;
-  display:grid;
-  place-items:center;
+  width:48px;height:48px;
+  display:grid;place-items:center;
   background:#ffffff18;
   border:1px solid #ffffff30;
   border-radius:12px;
   font-size:24px;
 }
 
-h1{
-  font-size:23px;
-  margin:0 0 5px;
-  font-weight:700;
-  line-height:1.4;
-}
+h1{font-size:23px;margin:0 0 5px}
+.sub{font-size:13px;color:#d4e1ee}
+.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 
-.sub{
-  font-size:13px;
-  color:#d4e1ee;
-}
-
-.system-tag{
-  border:1px solid #ffffff45;
-  background:#ffffff12;
-  padding:7px 12px;
-  border-radius:20px;
+.header-btn{
+  border:1px solid #ffffff50;
+  color:white;
+  background:#ffffff15;
+  border-radius:8px;
+  padding:9px 12px;
   font-size:12px;
-  white-space:nowrap;
 }
+
+.header-btn:hover{background:#ffffff28}
 
 .part-info{
   display:inline-block;
-  margin-top:19px;
+  margin-top:17px;
   padding:10px 14px;
   background:#ffffff14;
   border:1px solid #ffffff30;
@@ -134,20 +123,63 @@ h1{
   line-height:1.7;
 }
 
-/* =====================================
-   DATE PANEL
-===================================== */
+/* DASHBOARD */
+
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:13px;
+  margin-bottom:18px;
+}
+
+.stat-card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:17px;
+  box-shadow:var(--shadow);
+  min-width:0;
+}
+
+.stat-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+
+.stat-label{font-size:12px;color:var(--muted)}
+.stat-icon{
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  border-radius:9px;
+  background:var(--blue-light);
+  font-size:17px;
+}
+
+.stat-value{
+  font-size:25px;
+  font-weight:800;
+  margin-top:12px;
+  color:var(--text);
+  overflow-wrap:anywhere;
+}
+
+.stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* DATE */
 
 .date-panel{
-  background:white;
-  padding:18px 22px;
+  background:var(--surface);
+  padding:17px 20px;
   border-radius:12px;
   box-shadow:var(--shadow);
-  margin-bottom:18px;
+  margin-bottom:17px;
   display:flex;
   align-items:end;
-  gap:20px;
+  gap:16px;
   flex-wrap:wrap;
+  border:1px solid var(--line);
 }
 
 .field{
@@ -159,34 +191,72 @@ h1{
   min-width:190px;
 }
 
-input,select{
+input{
   font:inherit;
-  border:1px solid #cbd5df;
+  border:1px solid var(--line);
   border-radius:7px;
   padding:10px 12px;
-  background:white;
+  background:var(--surface);
   color:var(--text);
   min-width:0;
   width:100%;
-  transition:border .2s,box-shadow .2s;
 }
 
-input:focus,select:focus{
+input:focus{
   outline:none;
   border-color:var(--blue);
-  box-shadow:0 0 0 3px #2878bd18;
+  box-shadow:0 0 0 3px #2878bd20;
 }
 
 input[readonly]{
-  background:#f1f5f9;
-  color:#526477;
-  border-color:#e1e7ee;
+  background:var(--surface2);
   font-weight:600;
 }
 
-/* =====================================
-   SECTION HEADING
-===================================== */
+/* PROGRESS */
+
+.progress-panel{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:17px 20px;
+  margin-bottom:18px;
+  box-shadow:var(--shadow);
+}
+
+.progress-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-bottom:10px;
+  font-size:13px;
+  font-weight:700;
+}
+
+.progress-percent{color:var(--blue)}
+.progress-track{
+  height:10px;
+  background:var(--surface2);
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#2878bd,#25a477);
+  border-radius:20px;
+  transition:width .25s;
+}
+
+.progress-foot{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+/* SECTION */
 
 .section-heading{
   display:flex;
@@ -194,34 +264,28 @@ input[readonly]{
   justify-content:space-between;
   flex-wrap:wrap;
   gap:10px;
-  margin:22px 2px 12px;
+  margin:20px 2px 12px;
 }
 
 .section-heading h2{
   font-size:16px;
-  color:var(--navy);
+  color:var(--text);
   margin:0;
 }
 
-.section-note{
-  font-size:12px;
-  color:var(--muted);
-}
+.section-note{font-size:12px;color:var(--muted)}
 
-/* =====================================
-   TABLE
-===================================== */
+/* TABLE */
 
 .table-wrap{
   overflow:auto;
   width:100%;
   max-width:100%;
-  background:white;
+  background:var(--surface);
   border-radius:12px;
   box-shadow:var(--shadow);
   border:1px solid var(--line);
   -webkit-overflow-scrolling:touch;
-  overscroll-behavior-x:contain;
 }
 
 table{
@@ -244,7 +308,6 @@ th{
   background:var(--navy);
   color:white;
   font-size:12px;
-  font-weight:700;
   white-space:nowrap;
   position:sticky;
   top:0;
@@ -252,27 +315,12 @@ th{
   padding:14px 10px;
 }
 
-td:last-child,th:last-child{
-  border-right:0;
-}
+td:last-child,th:last-child{border-right:0}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:nth-child(even){background:var(--surface2)}
+tbody tr:hover{background:var(--blue-light)}
 
-tbody tr:last-child td{
-  border-bottom:0;
-}
-
-tbody tr:nth-child(even){
-  background:#f8fafc;
-}
-
-tbody tr:hover{
-  background:#f0f7fd;
-}
-
-.row-no{
-  font-weight:700;
-  color:var(--blue);
-  min-width:38px;
-}
+.row-no{font-weight:700;color:var(--blue)}
 
 td input{
   font-size:12px;
@@ -280,16 +328,8 @@ td input{
   min-width:90px;
 }
 
-td .customer,
-td .part-no,
-td .process{
-  min-width:110px;
-}
-
-td .time{
-  min-width:95px;
-  text-align:center;
-}
+td .customer,td .part-no,td .process{min-width:110px}
+td .time{min-width:95px;text-align:center}
 
 .duration{
   font-weight:700;
@@ -297,11 +337,12 @@ td .time{
   white-space:nowrap;
   background:#edf8f1;
   border-radius:6px;
+  padding:8px 5px;
 }
 
-/* =====================================
-   CHECKBOX
-===================================== */
+body.dark .duration{background:#183e32;color:#7ee0b0}
+
+/* CHECKBOX */
 
 .checkbox-group{
   display:flex;
@@ -313,7 +354,6 @@ td .time{
   overflow-y:auto;
   padding:4px 7px;
   text-align:left;
-  overscroll-behavior:contain;
 }
 
 .checkbox-item{
@@ -324,373 +364,215 @@ td .time{
   font-size:12px;
   white-space:nowrap;
   font-weight:normal;
-  color:#35485b;
+  color:var(--text);
   min-height:26px;
 }
 
 .checkbox-item input{
-  width:16px;
-  height:16px;
-  min-width:16px;
-  margin:0;
-  padding:0;
+  width:16px;height:16px;min-width:16px;
+  margin:0;padding:0;
   accent-color:var(--blue);
-  cursor:pointer;
 }
 
-/* =====================================
-   BUTTONS
-===================================== */
+/* ACTIONS */
 
 .actions{
   display:flex;
-  gap:10px;
+  gap:9px;
   flex-wrap:wrap;
-  margin:20px 0;
+  margin:18px 0;
 }
 
 .btn{
   border:0;
   border-radius:8px;
-  padding:12px 19px;
+  padding:12px 17px;
   color:white;
   font-weight:700;
   font-size:13px;
-  cursor:pointer;
-  background:var(--blue);
+  min-height:43px;
   transition:all .2s;
-  min-height:42px;
 }
 
-.btn:hover{
-  filter:brightness(.93);
-  transform:translateY(-1px);
+.btn:hover{filter:brightness(.93);transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+.blue{background:var(--blue)}
+.green{background:var(--green)}
+.gray{background:#64748b}
+.orange{background:#c77b20}
+
+/* AUTOSAVE */
+
+.save-status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:var(--muted);
+  font-size:11px;
+  margin:5px 2px 12px;
 }
 
-.btn:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-  transform:none;
+.save-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:#20a36b;
 }
 
-.green{
-  background:var(--green);
-}
-
-.gray{
-  background:#64748b;
-}
-
-/* =====================================
-   NOTICE AND FOOTER
-===================================== */
+/* NOTICE */
 
 .notice{
-  display:flex;
-  gap:10px;
-  align-items:flex-start;
-  background:#eaf3fb;
-  color:#375675;
-  border:1px solid #d5e6f5;
+  background:var(--blue-light);
+  color:var(--text);
+  border:1px solid var(--line);
   border-radius:9px;
   padding:12px 15px;
   font-size:12px;
-  line-height:1.7;
-  margin-top:14px;
+  line-height:1.8;
+  margin-top:13px;
 }
+
+/* TOAST */
+
+.toast-container{
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  width:min(360px,calc(100vw - 30px));
+}
+
+.toast{
+  display:flex;
+  gap:11px;
+  align-items:flex-start;
+  background:var(--surface);
+  color:var(--text);
+  border:1px solid var(--line);
+  border-left:4px solid var(--blue);
+  border-radius:10px;
+  padding:14px;
+  box-shadow:0 8px 28px #0002;
+  animation:toastIn .25s ease;
+}
+
+.toast.success{border-left-color:var(--green)}
+.toast.error{border-left-color:var(--red)}
+.toast.warning{border-left-color:var(--orange)}
+.toast-icon{font-size:19px}
+.toast-title{font-weight:700;font-size:13px;margin-bottom:4px}
+.toast-message{font-size:12px;color:var(--muted);line-height:1.6}
+
+@keyframes toastIn{
+  from{opacity:0;transform:translateX(20px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+/* FOOTER */
 
 .footer{
   text-align:center;
-  color:#8a98a8;
+  color:var(--muted);
   font-size:11px;
   padding:14px 0 5px;
 }
 
-/* =====================================
-   LAPTOP
-===================================== */
+/* RESPONSIVE */
 
-@media(max-width:1200px){
-
-  body{
-    padding:20px;
-  }
-
-  .header{
-    padding:23px;
-  }
-
-  table{
-    min-width:1320px;
-  }
+@media(max-width:1100px){
+  body{padding:18px}
+  .dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-
-/* =====================================
-   TABLET
-===================================== */
-
-@media(max-width:900px){
-
-  body{
-    padding:15px;
-  }
-
-  .header{
-    padding:20px;
-  }
-
-  h1{
-    font-size:20px;
-  }
-
-  .date-panel{
-    padding:16px;
-    gap:14px;
-  }
-
-  .field{
-    min-width:170px;
-  }
-
-  .section-heading{
-    margin-top:18px;
-  }
-
-  .actions{
-    gap:8px;
-  }
-
-  .btn{
-    padding:11px 14px;
-  }
-}
-
-/* =====================================
-   MOBILE
-===================================== */
 
 @media(max-width:700px){
-
-  body{
-    padding:10px;
-  }
-
-  .wrap{
-    width:100%;
-  }
-
-  .header{
-    padding:17px 15px;
-    border-radius:11px;
-    margin-bottom:13px;
-  }
-
-  .header-top{
-    align-items:flex-start;
-    gap:12px;
-  }
-
-  .brand{
-    gap:10px;
-  }
-
-  .brand-icon{
-    width:40px;
-    height:40px;
-    font-size:20px;
-  }
-
-  h1{
-    font-size:17px;
-    line-height:1.4;
-  }
-
-  .sub{
-    font-size:11px;
-  }
-
-  .system-tag{
-    font-size:10px;
-    padding:6px 9px;
-  }
-
-  .part-info{
-    display:block;
-    margin-top:13px;
-    padding:9px 10px;
-    font-size:12px;
-  }
-
-  .date-panel{
-    padding:13px;
-    margin-bottom:14px;
-    border-radius:10px;
-  }
-
-  .field{
-    width:100%;
-    min-width:0;
-    font-size:12px;
-  }
-
-  input,select{
-    min-height:43px;
-    font-size:14px;
-  }
-
-  .section-heading{
-    margin:18px 2px 10px;
-    align-items:flex-start;
-  }
-
-  .section-heading h2{
-    font-size:15px;
-  }
-
-  .section-note{
-    font-size:11px;
-  }
-
-  .table-wrap{
-    border-radius:9px;
-  }
-
-  /* ตารางเลื่อนซ้าย-ขวาได้ */
-  table{
-    min-width:1320px;
-  }
-
-  th{
-    padding:12px 9px;
-    font-size:12px;
-  }
-
-  td{
-    padding:9px 7px;
-    font-size:12px;
-  }
-
-  td input{
-    min-height:40px;
-    font-size:13px;
-    padding:8px;
-  }
-
-  .checkbox-group{
-    max-height:160px;
-    min-width:140px;
-    gap:7px;
-  }
-
-  .checkbox-item{
-    min-height:32px;
-    font-size:12px;
-  }
-
-  .checkbox-item input{
-    width:18px;
-    height:18px;
-    min-width:18px;
-  }
-
-  .duration{
-    padding:7px 5px;
-  }
-
-  .notice{
-    padding:11px;
-    font-size:11px;
-    line-height:1.8;
-    margin-top:12px;
-  }
-
-  /* ปุ่ม 2 คอลัมน์ */
-  .actions{
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:9px;
-    margin:15px 0;
-  }
-
-  .btn{
-    width:100%;
-    min-height:46px;
-    padding:10px 7px;
-    font-size:12px;
-    border-radius:8px;
-  }
-
-  .footer{
-    font-size:10px;
-    padding:12px 0;
-  }
+  body{padding:10px}
+  .header{padding:17px 15px}
+  .header-top{align-items:flex-start}
+  .brand{gap:10px}
+  .brand-icon{width:40px;height:40px;font-size:20px}
+  h1{font-size:17px;line-height:1.4}
+  .sub{font-size:11px}
+  .header-actions{width:100%}
+  .header-btn{flex:1}
+  .part-info{display:block;margin-top:13px;font-size:12px}
+  .dashboard{gap:9px}
+  .stat-card{padding:12px}
+  .stat-value{font-size:21px}
+  .stat-label{font-size:11px}
+  .stat-icon{width:29px;height:29px;font-size:15px}
+  .date-panel{padding:13px;gap:12px}
+  .field{width:100%;min-width:0}
+  input{min-height:43px;font-size:14px}
+  .progress-panel{padding:14px}
+  .section-heading h2{font-size:15px}
+  table{min-width:1320px}
+  .checkbox-group{max-height:160px}
+  .checkbox-item{min-height:32px}
+  .checkbox-item input{width:18px;height:18px;min-width:18px}
+  .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .btn{width:100%;min-height:45px;padding:10px 6px;font-size:12px}
+  .toast-container{top:10px;right:10px}
 }
-
-/* =====================================
-   SMALL MOBILE
-===================================== */
 
 @media(max-width:380px){
-
-  body{
-    padding:7px;
-  }
-
-  .header{
-    padding:14px 12px;
-  }
-
-  h1{
-    font-size:15px;
-  }
-
-  .brand-icon{
-    width:36px;
-    height:36px;
-  }
-
-  .system-tag{
-    font-size:9px;
-  }
-
-  .date-panel{
-    padding:11px;
-  }
-
-  .actions{
-    gap:7px;
-  }
-
-  .btn{
-    font-size:11px;
-    padding:9px 5px;
-  }
+  body{padding:7px}
+  .stat-value{font-size:18px}
+  .header{padding:14px 12px}
+  h1{font-size:15px}
 }
 
-/* =====================================
-   TOUCH SCREEN
-===================================== */
-
-@media(hover:none){
-
-  .btn:hover{
-    transform:none;
-    filter:none;
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  body{
+    background:white!important;
+    color:black!important;
+    padding:0!important;
   }
-
-  .btn:active{
-    opacity:.8;
-    transform:scale(.98);
+  .wrap{max-width:none}
+  .header{
+    background:#142b45!important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+    box-shadow:none;
+    border-radius:0;
+    padding:15px;
   }
-
-  .checkbox-item{
-    min-height:32px;
+  .dashboard,.progress-panel,.date-panel,.table-wrap{
+    box-shadow:none;
+    break-inside:avoid;
   }
+  .actions,.header-actions,.notice,.footer,.save-status,.toast-container{
+    display:none!important;
+  }
+  .dashboard{grid-template-columns:repeat(4,1fr)}
+  .stat-card{border:1px solid #ddd}
+  .table-wrap{overflow:visible;border:1px solid #ddd}
+  table{min-width:0;width:100%;font-size:8px}
+  th,td{font-size:8px;padding:5px 3px}
+  th{position:static}
+  td input{
+    border:0;
+    padding:2px;
+    font-size:8px;
+    background:transparent!important;
+    color:black!important;
+    box-shadow:none!important;
+  }
+  .checkbox-group{max-height:none;overflow:visible;gap:2px}
+  .checkbox-item{font-size:8px;gap:3px;min-height:0}
+  .checkbox-item input{width:10px;height:10px;min-width:10px}
+  .duration{background:transparent!important;color:black!important}
+  body.dark{background:white!important;color:black!important}
 }
 </style>
 </head>
 
 <body>
+<div class="toast-container" id="toastContainer"></div>
+
 <div class="wrap">
 
 <header class="header">
@@ -702,18 +584,73 @@ td .time{
         <div class="sub">TNC · Maintenance Department</div>
       </div>
     </div>
-    <div class="system-tag">DAILY MAINTENANCE SYSTEM</div>
+
+    <div class="header-actions">
+      <button class="header-btn" id="themeBtn" type="button">🌙 Dark Mode</button>
+      <button class="header-btn" id="printBtn" type="button">🖨 พิมพ์รายงาน</button>
+    </div>
   </div>
 
   <div id="partInfoDisplay" class="part-info" hidden></div>
 </header>
 
+<!-- DASHBOARD -->
+<section class="dashboard">
+  <div class="stat-card">
+    <div class="stat-top">
+      <span class="stat-label">รายการซ่อมในฟอร์มนี้</span>
+      <span class="stat-icon">📋</span>
+    </div>
+    <div class="stat-value" id="statJobs">0</div>
+    <div class="stat-sub">รายการที่เริ่มกรอกข้อมูลแล้ว</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-top">
+      <span class="stat-label">เวลาซ่อมรวม</span>
+      <span class="stat-icon">⏱</span>
+    </div>
+    <div class="stat-value" id="statTotal">0</div>
+    <div class="stat-sub">นาที</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-top">
+      <span class="stat-label">เวลาเฉลี่ยต่อรายการ</span>
+      <span class="stat-icon">📊</span>
+    </div>
+    <div class="stat-value" id="statAverage">0</div>
+    <div class="stat-sub">นาที / รายการที่มีเวลา</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-top">
+      <span class="stat-label">บันทึกวันนี้แล้ว</span>
+      <span class="stat-icon">✅</span>
+    </div>
+    <div class="stat-value" id="statSaved">-</div>
+    <div class="stat-sub">รายการในฐานข้อมูลวันนี้</div>
+  </div>
+</section>
+
+<!-- DATE -->
 <section class="date-panel">
   <label class="field">
     วันที่บันทึกรายงาน
-    <input type="text" id="reportDate"
-      placeholder="DD/MM/YY" maxlength="8" inputmode="numeric">
+    <input type="text" id="reportDate" placeholder="DD/MM/YY" maxlength="8" inputmode="numeric">
   </label>
+</section>
+
+<!-- PROGRESS -->
+<section class="progress-panel">
+  <div class="progress-head">
+    <span>ความครบถ้วนของข้อมูล</span>
+    <span class="progress-percent" id="progressPercent">0%</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-foot" id="progressText">กรอกข้อมูลเพื่อเริ่มติดตามความคืบหน้า</div>
 </section>
 
 <div class="section-heading">
@@ -744,19 +681,21 @@ td .time{
 </div>
 
 <div class="notice">
-  <span>ℹ</span>
-  <span>
-    กรอกเวลาในรูปแบบ 24 ชั่วโมง เช่น 08:30 หรือ 14:45
-    ระบบคำนวณระยะเวลาการซ่อมเป็นนาทีให้อัตโนมัติ
-    และรองรับงานข้ามเที่ยงคืน สามารถเลือกสาเหตุและรายละเอียดได้มากกว่าหนึ่งรายการ
-  </span>
+  ℹ กรอกเวลาในรูปแบบ 24 ชั่วโมง เช่น 08:30 หรือ 14:45
+  ระบบคำนวณระยะเวลาการซ่อมเป็นนาทีให้อัตโนมัติ
+  และรองรับงานข้ามเที่ยงคืน
+</div>
+
+<div class="save-status">
+  <span class="save-dot"></span>
+  <span id="saveStatus">ระบบพร้อมบันทึกฉบับร่างอัตโนมัติ</span>
 </div>
 
 <div class="actions">
-  <button class="btn" id="addRowBtn" type="button">＋ เพิ่มรายการ</button>
+  <button class="btn blue" id="addRowBtn" type="button">＋ เพิ่มรายการ</button>
   <button class="btn green" id="saveBtn" type="button">💾 บันทึกเข้าประวัติ</button>
   <button class="btn gray" id="historyBtn" type="button">▤ ดูประวัติรวม</button>
-  <button class="btn" id="clearBtn" type="button">↻ ล้างฟอร์ม</button>
+  <button class="btn orange" id="clearBtn" type="button">↻ ล้างฟอร์ม</button>
 </div>
 
 <div class="footer">
@@ -786,7 +725,7 @@ const supabaseClient = window.supabase.createClient(
 );
 
 // ========================================
-// 2. อ่าน PART จาก URL
+// 2. PART
 // ========================================
 
 const urlParams = new URLSearchParams(location.search);
@@ -794,88 +733,70 @@ const partCode = (urlParams.get("part") || "P181595028").trim();
 
 let PART_INFO = null;
 
-// ========================================
-// 3. โหลด PART จาก Supabase
-// ========================================
-
-async function loadPartInfo() {
-  const { data, error } = await supabaseClient
-    .from("part_database")
-    .select("part_no, part_name, customer, process")
-    .eq("part_no", partCode)
-    .maybeSingle();
-
-  if (error) {
-    console.error("Load PART error:", error);
-    throw new Error("โหลดข้อมูล PART ไม่สำเร็จ: " + error.message);
-  }
-
-  if (!data) {
-    throw new Error("ไม่พบ PART No. " + partCode + " ในตาราง part_database");
-  }
-
-  PART_INFO = {
-    customer: data.customer || "",
-    partNo: data.part_no,
-    partName: data.part_name || "",
-    process: data.process || ""
-  };
-
-  const display = document.getElementById("partInfoDisplay");
-  display.hidden = false;
-  display.textContent =
-    `PART: ${PART_INFO.partNo}` +
-    (PART_INFO.partName ? ` · ${PART_INFO.partName}` : "") +
-    ` · Customer: ${PART_INFO.customer}` +
-    ` · Process: ${PART_INFO.process}`;
-}
-
-// ========================================
-// 4. ตัวแปรระบบ
-// ========================================
-
 const tbody = document.getElementById("tableBody");
 const dateInput = document.getElementById("reportDate");
 
-// ========================================
-// 5. รายการ Checkbox
-// ========================================
-
-const options = {
-  repair: [
-    "เจาะ","กรีลิ่ว","เบี้ย","เปลี่ยนเม็ด",
-    "เปลี่ยนเม็ด+ตัด","เปลี่ยนเม็ด+ล้าง",
-    "ล้างแม่พิมพ์","ปรับระดับ","อื่นๆ"
-  ],
-  problem: [
-    "Punch แตก","Punch เบี้ย","เม็ดสึกหรอ",
-    "น้ำมันรั่ว","สิ่งสกปรก","รอยขีดข่วน",
-    "ไม่มี","อื่นๆ"
-  ],
-  detail: [
-    "เปลี่ยนของใหม่","ถอดล้าง+ปรับระดับ",
-    "เปลี่ยนเม็ด","ล้างทำความสะอาด",
-    "เปลี่ยนแหวนรอง","เปลี่ยนขอบพลาสติก",
-    "ปรับแรงดัน","ตรวจสอบ+ทดลองเดินเครื่อง",
-    "อื่นๆ - ระบุ"
-  ]
-};
+const draftKey = "tnc_daily_report_draft_" + partCode;
 
 // ========================================
-// 6. วันที่ DD/MM/YY
+// 3. TOAST NOTIFICATION
 // ========================================
 
-function localISODate(d = new Date()) {
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const year = String(d.getFullYear()).slice(-2);
-  return `${day}/${month}/${year}`;
+function notify(title, message, type = "success") {
+  const icons = {
+    success:"✓",
+    error:"✕",
+    warning:"!",
+    info:"ℹ"
+  };
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+
+  const icon = document.createElement("div");
+  icon.className = "toast-icon";
+  icon.textContent = icons[type] || "ℹ";
+
+  const content = document.createElement("div");
+
+  const heading = document.createElement("div");
+  heading.className = "toast-title";
+  heading.textContent = title;
+
+  const detail = document.createElement("div");
+  detail.className = "toast-message";
+  detail.textContent = message;
+
+  content.append(heading, detail);
+  toast.append(icon, content);
+
+  const container = document.getElementById("toastContainer");
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(20px)";
+    setTimeout(() => toast.remove(), 250);
+  }, 3500);
 }
 
-dateInput.value = localISODate();
+// ========================================
+// 4. DATE
+// ========================================
+
+function localDateText() {
+  const d = new Date();
+  return [
+    String(d.getDate()).padStart(2,"0"),
+    String(d.getMonth()+1).padStart(2,"0"),
+    String(d.getFullYear()).slice(-2)
+  ].join("/");
+}
+
+dateInput.value = localDateText();
 
 // ========================================
-// 7. ป้องกัน HTML
+// 5. HTML ESCAPE
 // ========================================
 
 function escapeHTML(value) {
@@ -889,8 +810,58 @@ function escapeHTML(value) {
 }
 
 // ========================================
-// 8. สร้าง Checkbox
+// 6. LOAD PART
 // ========================================
+
+async function loadPartInfo() {
+  const { data, error } = await supabaseClient
+    .from("part_database")
+    .select("part_no, part_name, customer, process")
+    .eq("part_no", partCode)
+    .maybeSingle();
+
+  if (error) throw new Error("โหลดข้อมูล PART ไม่สำเร็จ: " + error.message);
+  if (!data) throw new Error("ไม่พบ PART No. " + partCode + " ใน part_database");
+
+  PART_INFO = {
+    customer:data.customer || "",
+    partNo:data.part_no,
+    partName:data.part_name || "",
+    process:data.process || ""
+  };
+
+  const display = document.getElementById("partInfoDisplay");
+  display.hidden = false;
+  display.textContent =
+    `PART: ${PART_INFO.partNo}` +
+    (PART_INFO.partName ? ` · ${PART_INFO.partName}` : "") +
+    ` · Customer: ${PART_INFO.customer}` +
+    ` · Process: ${PART_INFO.process}`;
+}
+
+// ========================================
+// 7. CHECKBOX OPTIONS
+// ========================================
+
+const options = {
+  repair:[
+    "เจาะ","กรีลิ่ว","เบี้ย","เปลี่ยนเม็ด",
+    "เปลี่ยนเม็ด+ตัด","เปลี่ยนเม็ด+ล้าง",
+    "ล้างแม่พิมพ์","ปรับระดับ","อื่นๆ"
+  ],
+  problem:[
+    "Punch แตก","Punch เบี้ย","เม็ดสึกหรอ",
+    "น้ำมันรั่ว","สิ่งสกปรก","รอยขีดข่วน",
+    "ไม่มี","อื่นๆ"
+  ],
+  detail:[
+    "เปลี่ยนของใหม่","ถอดล้าง+ปรับระดับ",
+    "เปลี่ยนเม็ด","ล้างทำความสะอาด",
+    "เปลี่ยนแหวนรอง","เปลี่ยนขอบพลาสติก",
+    "ปรับแรงดัน","ตรวจสอบ+ทดลองเดินเครื่อง",
+    "อื่นๆ - ระบุ"
+  ]
+};
 
 function checkboxGroupHTML(cls, items) {
   return `
@@ -906,7 +877,7 @@ function checkboxGroupHTML(cls, items) {
 }
 
 // ========================================
-// 9. เติมข้อมูล PART
+// 8. PART DATA
 // ========================================
 
 function applyPartInfo(row) {
@@ -916,7 +887,7 @@ function applyPartInfo(row) {
 }
 
 // ========================================
-// 10. เพิ่มแถวใหม่
+// 9. ADD ROW
 // ========================================
 
 function addRow(data = {}) {
@@ -928,9 +899,9 @@ function addRow(data = {}) {
     <td><input class="customer" type="text" readonly></td>
     <td><input class="part-no" type="text" readonly></td>
     <td><input class="process" type="text" readonly></td>
-    <td>${checkboxGroupHTML("cause-repair", options.repair)}</td>
-    <td>${checkboxGroupHTML("cause-problem", options.problem)}</td>
-    <td>${checkboxGroupHTML("repair-detail", options.detail)}</td>
+    <td>${checkboxGroupHTML("cause-repair",options.repair)}</td>
+    <td>${checkboxGroupHTML("cause-problem",options.problem)}</td>
+    <td>${checkboxGroupHTML("repair-detail",options.detail)}</td>
     <td><input class="repaired-by" type="text" placeholder="ชื่อผู้ซ่อม"></td>
     <td><input class="time-start time" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM"></td>
     <td><input class="time-end time" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM"></td>
@@ -942,28 +913,26 @@ function addRow(data = {}) {
   applyPartInfo(tr);
 
   const fields = {
-    ".repaired-by": data.repairedBy,
-    ".time-start": data.startTime,
-    ".time-end": data.endTime,
-    ".remark": data.remarks
+    ".repaired-by":data.repairedBy,
+    ".time-start":data.startTime,
+    ".time-end":data.endTime,
+    ".remark":data.remarks
   };
 
-  for (const [selector, value] of Object.entries(fields)) {
-    if (value != null) {
-      tr.querySelector(selector).value = value;
-    }
-  }
+  Object.entries(fields).forEach(([selector,value]) => {
+    if (value != null) tr.querySelector(selector).value = value;
+  });
 
-  restoreCheckboxes(tr, "cause-repair", data.causeRepair);
-  restoreCheckboxes(tr, "cause-problem", data.causeProblem);
-  restoreCheckboxes(tr, "repair-detail", data.repairDetail);
+  restoreCheckboxes(tr,"cause-repair",data.causeRepair);
+  restoreCheckboxes(tr,"cause-problem",data.causeProblem);
+  restoreCheckboxes(tr,"repair-detail",data.repairDetail);
 
   updateDuration(tr);
   renumber();
 }
 
 // ========================================
-// 11. คืนค่า Checkbox
+// 10. RESTORE CHECKBOX
 // ========================================
 
 function restoreCheckboxes(row, cls, value) {
@@ -974,47 +943,47 @@ function restoreCheckboxes(row, cls, value) {
     : String(value).split(",").map(x => x.trim());
 
   row.querySelectorAll(`.${cls} input[type="checkbox"]`)
-    .forEach(chk => {
-      chk.checked = selected.includes(chk.value);
-    });
+    .forEach(chk => chk.checked = selected.includes(chk.value));
 }
 
 // ========================================
-// 12. เรียงเลขลำดับ
+// 11. NUMBER ROWS
 // ========================================
 
 function renumber() {
-  [...tbody.querySelectorAll(".data-row")].forEach((row, i) => {
-    row.querySelector(".row-no").textContent = i + 1;
+  [...tbody.querySelectorAll(".data-row")].forEach((row,i) => {
+    row.querySelector(".row-no").textContent = i+1;
   });
 }
 
 // ========================================
-// 13. ตรวจสอบเวลา
+// 12. TIME VALIDATION
 // ========================================
 
 function valid24Hour(value) {
-  value = value.trim();
+  if (!/^\d{2}:\d{2}$/.test(value)) return false;
 
-  if (value.length !== 5 || value[2] !== ":") return false;
-
-  const hourText = value.substring(0, 2);
-  const minuteText = value.substring(3, 5);
-
-  const isDigit = text =>
-    [...text].every(char => char >= "0" && char <= "9");
-
-  if (!isDigit(hourText) || !isDigit(minuteText)) return false;
-
-  const hour = Number(hourText);
-  const minute = Number(minuteText);
+  const [hour,minute] = value.split(":").map(Number);
 
   return hour >= 0 && hour <= 23 &&
          minute >= 0 && minute <= 59;
 }
 
+function getDuration(start,end) {
+  if (!valid24Hour(start) || !valid24Hour(end)) return null;
+
+  const [sh,sm] = start.split(":").map(Number);
+  const [eh,em] = end.split(":").map(Number);
+
+  let minutes = (eh*60+em)-(sh*60+sm);
+
+  if (minutes < 0) minutes += 1440;
+
+  return minutes;
+}
+
 // ========================================
-// 14. คำนวณเวลาซ่อมเป็นนาทีทั้งหมด
+// 13. UPDATE DURATION
 // ========================================
 
 function updateDuration(row) {
@@ -1022,117 +991,46 @@ function updateDuration(row) {
   const end = row.querySelector(".time-end").value.trim();
   const cell = row.querySelector(".total-time-cell");
 
-  if (!start || !end ||
-      !valid24Hour(start) || !valid24Hour(end)) {
-    cell.textContent = "--";
-    return;
-  }
+  const duration = getDuration(start,end);
 
-  const [sh, sm] = start.split(":").map(Number);
-  const [eh, em] = end.split(":").map(Number);
-
-  const startMinutes = (sh * 60) + sm;
-  const endMinutes = (eh * 60) + em;
-
-  let totalMinutes = endMinutes - startMinutes;
-
-  // รองรับงานข้ามเที่ยงคืน
-  if (totalMinutes < 0) {
-    totalMinutes += 1440;
-  }
-
-  cell.textContent = `${totalMinutes} นาที`;
+  cell.textContent = duration === null ? "--" : `${duration} นาที`;
 }
 
 // ========================================
-// 15. จัดรูปแบบเวลาอัตโนมัติ
+// 14. GET CHECKED
 // ========================================
 
-tbody.addEventListener("input", e => {
-  if (e.target.matches(".time-start,.time-end")) {
-    const el = e.target;
-    const digits = el.value.replace(/[^0-9]/g, "").slice(0, 4);
-
-    el.value = digits.length > 2
-      ? digits.slice(0, 2) + ":" + digits.slice(2)
-      : digits;
-
-    updateDuration(el.closest("tr"));
-  }
-});
-
-// ========================================
-// 16. ล้างข้อมูลในแถว
-// ========================================
-
-function clearRow(row) {
-  row.querySelectorAll("input").forEach(el => {
-    if (el.type === "checkbox") {
-      el.checked = false;
-    } else {
-      el.value = "";
-    }
-  });
-
-  applyPartInfo(row);
-  row.querySelector(".total-time-cell").textContent = "--";
-}
-
-// ========================================
-// 17. อ่าน Checkbox ที่เลือก
-// ========================================
-
-function getCheckedValues(row, cls) {
+function getCheckedValues(row,cls) {
   return [...row.querySelectorAll(
     `.${cls} input[type="checkbox"]:checked`
   )].map(chk => chk.value).join(", ");
 }
 
 // ========================================
-// 18. รวบรวมข้อมูล
+// 15. GET RECORDS
 // ========================================
 
 function getRecords() {
-  return [...tbody.querySelectorAll(".data-row")].map((row, index) => {
-    const get = selector =>
-      row.querySelector(selector).value.trim();
+  return [...tbody.querySelectorAll(".data-row")].map(row => {
+    const get = selector => row.querySelector(selector).value.trim();
 
     const start = get(".time-start");
     const end = get(".time-end");
-
-    // คำนวณและเก็บเป็นนาที
-    let workDuration = "";
-
-    if (start && end &&
-        valid24Hour(start) && valid24Hour(end)) {
-
-      const [sh, sm] = start.split(":").map(Number);
-      const [eh, em] = end.split(":").map(Number);
-
-      let minutes = (eh * 60 + em) - (sh * 60 + sm);
-
-      // รองรับงานข้ามเที่ยงคืน
-      if (minutes < 0) {
-        minutes += 1440;
-      }
-
-      workDuration = String(minutes);
-    }
+    const duration = getDuration(start,end);
 
     return {
-      id: `${Date.now()}-${index}-${Math.random().toString(36).slice(2,7)}`,
-      checkDate: dateInput.value,
-      customer: PART_INFO.customer,
-      partNo: PART_INFO.partNo,
-      process: PART_INFO.process,
-      causeRepair: getCheckedValues(row, "cause-repair"),
-      causeProblem: getCheckedValues(row, "cause-problem"),
-      repairDetail: getCheckedValues(row, "repair-detail"),
-      repairedBy: get(".repaired-by"),
-      startTime: start,
-      endTime: end,
-      workDuration: workDuration,
-      remarks: get(".remark")
+      checkDate:dateInput.value,
+      customer:PART_INFO.customer,
+      partNo:PART_INFO.partNo,
+      process:PART_INFO.process,
+      causeRepair:getCheckedValues(row,"cause-repair"),
+      causeProblem:getCheckedValues(row,"cause-problem"),
+      repairDetail:getCheckedValues(row,"repair-detail"),
+      repairedBy:get(".repaired-by"),
+      startTime:start,
+      endTime:end,
+      workDuration:duration === null ? "" : String(duration),
+      remarks:get(".remark")
     };
   }).filter(r => Boolean(
     r.causeRepair || r.causeProblem || r.repairDetail ||
@@ -1141,48 +1039,241 @@ function getRecords() {
 }
 
 // ========================================
-// 19. บันทึกลง Supabase
+// 16. DASHBOARD & PROGRESS
+// ========================================
+
+function updateDashboard() {
+  const rows = [...tbody.querySelectorAll(".data-row")];
+
+  const records = getRecords();
+  const durations = records
+    .map(r => r.workDuration)
+    .filter(v => v !== "")
+    .map(Number);
+
+  const total = durations.reduce((sum,n) => sum+n,0);
+  const average = durations.length
+    ? Math.round(total/durations.length)
+    : 0;
+
+  document.getElementById("statJobs").textContent = records.length;
+  document.getElementById("statTotal").textContent = total.toLocaleString("th-TH");
+  document.getElementById("statAverage").textContent = average.toLocaleString("th-TH");
+
+  // ความครบถ้วน: ผู้ซ่อม + สาเหตุ + รายละเอียด + เวลาเริ่ม + เวลาเสร็จ
+  let completed = 0;
+  let possible = 0;
+
+  rows.forEach(row => {
+    const checks = [
+      row.querySelector(".repaired-by").value.trim() !== "",
+      row.querySelector(".cause-repair input:checked") !== null,
+      row.querySelector(".cause-problem input:checked") !== null,
+      row.querySelector(".repair-detail input:checked") !== null,
+      valid24Hour(row.querySelector(".time-start").value.trim()),
+      valid24Hour(row.querySelector(".time-end").value.trim())
+    ];
+
+    possible += checks.length;
+    completed += checks.filter(Boolean).length;
+  });
+
+  const percent = possible ? Math.round(completed/possible*100) : 0;
+
+  document.getElementById("progressPercent").textContent = percent + "%";
+  document.getElementById("progressFill").style.width = percent + "%";
+
+  document.getElementById("progressText").textContent =
+    `${completed} จาก ${possible} ช่องข้อมูลที่ต้องกรอกครบถ้วน`;
+}
+
+// ========================================
+// 17. AUTOSAVE LOCAL DRAFT
+// ========================================
+
+let autoSaveTimer = null;
+let lastDraftSnapshot = "";
+
+function getDraft() {
+  return {
+    date:dateInput.value,
+    rows:[...tbody.querySelectorAll(".data-row")].map(row => ({
+      repairedBy:row.querySelector(".repaired-by").value,
+      startTime:row.querySelector(".time-start").value,
+      endTime:row.querySelector(".time-end").value,
+      remarks:row.querySelector(".remark").value,
+      causeRepair:getCheckedValues(row,"cause-repair"),
+      causeProblem:getCheckedValues(row,"cause-problem"),
+      repairDetail:getCheckedValues(row,"repair-detail")
+    }))
+  };
+}
+
+function saveDraft() {
+  if (!PART_INFO) return;
+
+  try {
+    const draft = getDraft();
+    const snapshot = JSON.stringify(draft);
+
+    if (snapshot === lastDraftSnapshot) return;
+
+    localStorage.setItem(draftKey,snapshot);
+    lastDraftSnapshot = snapshot;
+
+    document.getElementById("saveStatus").textContent =
+      "บันทึกฉบับร่างล่าสุด " +
+      new Date().toLocaleTimeString("th-TH",{hour:"2-digit",minute:"2-digit"});
+
+  } catch(error) {
+    console.error("Draft save error:",error);
+    document.getElementById("saveStatus").textContent =
+      "ไม่สามารถบันทึกฉบับร่างในเบราว์เซอร์ได้";
+  }
+}
+
+function scheduleDraftSave() {
+  clearTimeout(autoSaveTimer);
+
+  document.getElementById("saveStatus").textContent = "กำลังบันทึกฉบับร่าง...";
+
+  autoSaveTimer = setTimeout(saveDraft,500);
+}
+
+function restoreDraft() {
+  try {
+    const raw = localStorage.getItem(draftKey);
+    if (!raw) return false;
+
+    const draft = JSON.parse(raw);
+
+    if (!draft || !Array.isArray(draft.rows)) return false;
+
+    dateInput.value = draft.date || localDateText();
+    tbody.innerHTML = "";
+
+    draft.rows.forEach(row => addRow(row));
+
+    if (!draft.rows.length) addRow();
+
+    lastDraftSnapshot = JSON.stringify(getDraft());
+
+    document.getElementById("saveStatus").textContent =
+      "กู้คืนฉบับร่างจากการใช้งานครั้งก่อนแล้ว";
+
+    return true;
+
+  } catch(error) {
+    console.error("Restore draft error:",error);
+    return false;
+  }
+}
+
+// ========================================
+// 18. LOAD TODAY SAVED COUNT
+// ========================================
+
+async function loadTodaySummary() {
+  const today = dateInput.value;
+
+  try {
+    const {data,error} = await supabaseClient
+      .from("daily_reports")
+      .select("report_date")
+      .eq("report_date",today);
+
+    if (error) throw error;
+
+    document.getElementById("statSaved").textContent =
+      data.length.toLocaleString("th-TH");
+
+  } catch(error) {
+    console.error("Today summary error:",error);
+    document.getElementById("statSaved").textContent = "-";
+  }
+}
+
+// ========================================
+// 19. INPUT EVENTS
+// ========================================
+
+tbody.addEventListener("input",e => {
+  if (e.target.matches(".time-start,.time-end")) {
+    const el = e.target;
+    const digits = el.value.replace(/[^0-9]/g,"").slice(0,4);
+
+    el.value = digits.length > 2
+      ? digits.slice(0,2) + ":" + digits.slice(2)
+      : digits;
+
+    updateDuration(el.closest("tr"));
+  }
+
+  updateDashboard();
+  scheduleDraftSave();
+});
+
+tbody.addEventListener("change",() => {
+  updateDashboard();
+  scheduleDraftSave();
+});
+
+dateInput.addEventListener("input",() => {
+  updateDashboard();
+  scheduleDraftSave();
+});
+
+// ========================================
+// 20. SAVE TO SUPABASE
 // ========================================
 
 async function saveData() {
   const rows = [...tbody.querySelectorAll(".data-row")];
 
-  const invalidTime = rows.find(row =>
-    [
-      row.querySelector(".time-start").value.trim(),
-      row.querySelector(".time-end").value.trim()
-    ].some(value => value !== "" && !valid24Hour(value))
-  );
+  const invalidTime = rows.find(row => {
+    const start = row.querySelector(".time-start").value.trim();
+    const end = row.querySelector(".time-end").value.trim();
+
+    return (start && !valid24Hour(start)) ||
+           (end && !valid24Hour(end));
+  });
 
   if (invalidTime) {
-    alert("กรุณากรอกเวลาแบบ HH:MM ให้ถูกต้อง เช่น 08:30 หรือ 14:45");
+    notify("เวลาไม่ถูกต้อง","กรุณากรอกเวลาแบบ HH:MM เช่น 08:30","error");
+    return;
+  }
+
+  const incompleteTime = rows.find(row => {
+    const start = row.querySelector(".time-start").value.trim();
+    const end = row.querySelector(".time-end").value.trim();
+    return Boolean(start) !== Boolean(end);
+  });
+
+  if (incompleteTime) {
+    notify("ข้อมูลเวลาไม่ครบ","กรุณากรอกเวลาเริ่มและเวลาเสร็จให้ครบคู่","warning");
     return;
   }
 
   const records = getRecords();
 
   if (!records.length) {
-    alert("ยังไม่มีข้อมูล กรุณากรอกข้อมูลก่อนบันทึก");
+    notify("ยังไม่มีข้อมูล","กรุณากรอกรายการซ่อมก่อนบันทึก","warning");
     return;
   }
 
   const payload = records.map(r => ({
-    id: r.id,
-    report_date: r.checkDate,
-    customer: r.customer,
-    part_no: r.partNo,
-    process: r.process,
-    cause_repair: r.causeRepair,
-    cause_problem: r.causeProblem,
-    repair_detail: r.repairDetail,
-    repaired_by: r.repairedBy,
-    start_time: r.startTime,
-    end_time: r.endTime,
-
-    // บันทึกเฉพาะตัวเลขนาที เช่น "150"
-    work_duration: r.workDuration,
-
-    remarks: r.remarks
+    report_date:r.checkDate,
+    customer:r.customer,
+    part_no:r.partNo,
+    process:r.process,
+    cause_repair:r.causeRepair,
+    cause_problem:r.causeProblem,
+    repair_detail:r.repairDetail,
+    repaired_by:r.repairedBy,
+    start_time:r.startTime,
+    end_time:r.endTime,
+    work_duration:r.workDuration,
+    remarks:r.remarks
   }));
 
   const saveBtn = document.getElementById("saveBtn");
@@ -1191,19 +1282,26 @@ async function saveData() {
   saveBtn.textContent = "กำลังบันทึก...";
 
   try {
-    const { error } = await supabaseClient
+    const {error} = await supabaseClient
       .from("daily_reports")
       .insert(payload);
 
     if (error) throw error;
 
-    alert(`บันทึกสำเร็จ ${records.length} รายการ`);
+    localStorage.removeItem(draftKey);
+    lastDraftSnapshot = "";
 
-    location.href = "history.html";
+    notify("บันทึกสำเร็จ",`บันทึกข้อมูล ${records.length} รายการเรียบร้อยแล้ว`,"success");
 
-  } catch (error) {
-    console.error("Save error:", error);
-    alert("บันทึกไม่สำเร็จ: " + error.message);
+    await loadTodaySummary();
+
+    setTimeout(() => {
+      location.href = "history.html";
+    },1200);
+
+  } catch(error) {
+    console.error("Save error:",error);
+    notify("บันทึกไม่สำเร็จ",error.message,"error");
 
     saveBtn.disabled = false;
     saveBtn.textContent = "💾 บันทึกเข้าประวัติ";
@@ -1211,37 +1309,108 @@ async function saveData() {
 }
 
 // ========================================
-// 20. ปุ่มควบคุม
+// 21. CLEAR FORM
 // ========================================
 
-document.getElementById("addRowBtn")
-  .addEventListener("click", () => addRow());
+function clearForm() {
+  if (!confirm("ต้องการล้างข้อมูลทั้งหมดในฟอร์มใช่หรือไม่?")) return;
 
-document.getElementById("saveBtn")
-  .addEventListener("click", saveData);
+  tbody.innerHTML = "";
+  addRow();
 
-document.getElementById("historyBtn")
-  .addEventListener("click", () => {
-    location.href = "history.html";
-  });
+  localStorage.removeItem(draftKey);
+  lastDraftSnapshot = "";
 
-document.getElementById("clearBtn")
-  .addEventListener("click", () => {
-    if (confirm("ต้องการล้างข้อมูลทั้งหมดในฟอร์มใช่หรือไม่?")) {
-      tbody.innerHTML = "";
-      addRow();
-    }
-  });
+  updateDashboard();
+  scheduleDraftSave();
+
+  notify("ล้างฟอร์มแล้ว","เริ่มกรอกรายการใหม่ได้เลย","success");
+}
 
 // ========================================
-// 21. เริ่มต้นระบบ
+// 22. DARK MODE
+// ========================================
+
+function setTheme(dark) {
+  document.body.classList.toggle("dark",dark);
+
+  document.getElementById("themeBtn").textContent =
+    dark ? "☀ Light Mode" : "🌙 Dark Mode";
+
+  localStorage.setItem("tnc_daily_report_theme",dark ? "dark" : "light");
+}
+
+const savedTheme = localStorage.getItem("tnc_daily_report_theme");
+setTheme(savedTheme === "dark");
+
+document.getElementById("themeBtn").addEventListener("click",() => {
+  const dark = !document.body.classList.contains("dark");
+  setTheme(dark);
+});
+
+// ========================================
+// 23. PRINT
+// ========================================
+
+document.getElementById("printBtn").addEventListener("click",() => {
+  updateDashboard();
+  window.print();
+});
+
+// ========================================
+// 24. BUTTONS
+// ========================================
+
+document.getElementById("addRowBtn").addEventListener("click",() => {
+  addRow();
+  updateDashboard();
+  scheduleDraftSave();
+});
+
+document.getElementById("saveBtn").addEventListener("click",saveData);
+
+document.getElementById("historyBtn").addEventListener("click",() => {
+  location.href = "history.html";
+});
+
+document.getElementById("clearBtn").addEventListener("click",clearForm);
+
+// ========================================
+// 25. WARN BEFORE LEAVING
+// ========================================
+
+window.addEventListener("beforeunload",e => {
+  const records = getRecords();
+
+  if (records.length) {
+    saveDraft();
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
+
+// ========================================
+// 26. INIT
 // ========================================
 
 async function init() {
   try {
     await loadPartInfo();
-    addRow();
-  } catch (error) {
+
+    const restored = restoreDraft();
+
+    if (!restored) addRow();
+
+    updateDashboard();
+    await loadTodaySummary();
+
+    if (restored) {
+      notify("กู้คืนข้อมูลแล้ว","พบฉบับร่างที่บันทึกไว้ในเครื่องนี้","success");
+    } else {
+      notify("พร้อมใช้งาน","โหลดข้อมูล PART เรียบร้อยแล้ว","success");
+    }
+
+  } catch(error) {
     console.error(error);
 
     document.querySelector(".wrap").innerHTML = `
@@ -1256,7 +1425,6 @@ async function init() {
 }
 
 init();
-
 </script>
 </body>
 </html>
