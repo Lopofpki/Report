@@ -521,15 +521,18 @@ function getRecords() {
 // 19. บันทึกลง Supabase
 // ========================================
 
+
 async function saveData() {
 
   if (
-    SUPABASE_URL === "https://enmzfxdswzhatvcenrds.supabase.co" ||
-    SUPABASE_ANON_KEY === "sb_publishable_DkoWB0IDDgodellT5vgcLQ_YdqIhKdI"
+    !SUPABASE_URL ||
+    !SUPABASE_ANON_KEY ||
+    !SUPABASE_URL.startsWith("https://")
   ) {
-    alert("กรุณาใส่ Supabase Project URL และ Publishable key ก่อนใช้งาน");
+    alert("กรุณาตรวจสอบ Supabase Project URL และ Publishable key");
     return;
   }
+
 
   const rows = [...tbody.querySelectorAll(".data-row")];
 
