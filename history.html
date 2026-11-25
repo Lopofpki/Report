@@ -7,6 +7,7 @@
 <title>Daily Report History | TNC</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
 :root {
@@ -25,9 +26,7 @@
   --shadow:0 5px 22px rgba(25,48,74,.06);
 }
 
-* {
-  box-sizing:border-box;
-}
+* { box-sizing:border-box; }
 
 body {
   margin:0;
@@ -43,7 +42,6 @@ body {
 }
 
 /* HEADER */
-
 .header {
   background:linear-gradient(120deg,var(--navy),var(--navy2));
   color:white;
@@ -109,7 +107,6 @@ body {
 }
 
 /* GENERAL PANEL */
-
 .panel {
   background:var(--white);
   padding:23px;
@@ -137,7 +134,6 @@ body {
 }
 
 /* FILTER */
-
 .filter-grid {
   display:grid;
   grid-template-columns:minmax(220px,2fr) 1fr 1fr auto auto;
@@ -176,7 +172,6 @@ input:focus {
 }
 
 /* BUTTONS */
-
 .btn {
   border:0;
   border-radius:7px;
@@ -202,19 +197,11 @@ input:focus {
   transform:none;
 }
 
-.btn-gray {
-  background:#64748b;
-}
-
-.btn-green {
-  background:var(--green);
-}
+.btn-gray { background:#64748b; }
+.btn-green { background:var(--green); }
 
 /* DASHBOARD */
-
-.dashboard-section {
-  margin-bottom:22px;
-}
+.dashboard-section { margin-bottom:22px; }
 
 .dashboard-title {
   display:flex;
@@ -320,8 +307,7 @@ input:focus {
   z-index:1;
 }
 
-/* DASHBOARD CHARTS */
-
+/* CHARTS */
 .dashboard-grid {
   display:grid;
   grid-template-columns:1.5fr 1fr;
@@ -405,9 +391,7 @@ input:focus {
   gap:16px;
 }
 
-.rank-item {
-  min-width:0;
-}
+.rank-item { min-width:0; }
 
 .rank-head {
   display:flex;
@@ -453,7 +437,6 @@ input:focus {
 }
 
 /* TABLE */
-
 .table-panel {
   background:white;
   border-radius:13px;
@@ -527,13 +510,8 @@ td {
   color:#435569;
 }
 
-tbody tr:nth-child(even) {
-  background:#f8fafc;
-}
-
-tbody tr:hover {
-  background:#edf5fc;
-}
+tbody tr:nth-child(even) { background:#f8fafc; }
+tbody tr:hover { background:#edf5fc; }
 
 td:nth-child(4) {
   font-weight:700;
@@ -552,8 +530,22 @@ td:nth-child(4) {
   font-size:13px;
 }
 
-/* FOOTER */
+/* ACTIONS */
+.action-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
 
+.action-left,.action-right {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+}
+
+/* FOOTER */
 .footer {
   text-align:center;
   color:#94a3b8;
@@ -562,131 +554,48 @@ td:nth-child(4) {
 }
 
 /* RESPONSIVE */
-
 @media(max-width:1050px) {
-  .filter-grid {
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .dashboard-cards {
-    grid-template-columns:repeat(2,1fr);
-  }
+  .filter-grid { grid-template-columns:repeat(2,1fr); }
+  .dashboard-cards { grid-template-columns:repeat(2,1fr); }
 }
 
 @media(max-width:700px) {
-  body {
-    padding:12px;
-  }
-
-  .header {
-    padding:21px 17px;
-  }
-
-  .header h1 {
-    font-size:18px;
-  }
-
-  .brand-icon {
-    width:42px;
-    height:42px;
-  }
-
-  .panel {
-    padding:16px;
-  }
-
-  .filter-grid {
-    grid-template-columns:1fr;
-  }
-
-  .filter-grid .btn {
-    width:100%;
-  }
-
-  .dashboard-grid {
-    grid-template-columns:1fr;
-  }
-
-  .dash-panel {
-    padding:16px;
-  }
-
-  .dash-card {
-    padding:14px;
-  }
-
-  .dash-card-value {
-    font-size:24px;
-  }
-
-  .month-chart {
-    gap:6px;
-  }
-
-  .table-heading {
-    padding:16px;
-  }
+  body { padding:12px; }
+  .header { padding:21px 17px; }
+  .header h1 { font-size:18px; }
+  .brand-icon { width:42px; height:42px; }
+  .panel { padding:16px; }
+  .filter-grid { grid-template-columns:1fr; }
+  .filter-grid .btn { width:100%; }
+  .dashboard-grid { grid-template-columns:1fr; }
+  .dash-panel { padding:16px; }
+  .dash-card { padding:14px; }
+  .dash-card-value { font-size:24px; }
+  .month-chart { gap:6px; }
+  .table-heading { padding:16px; }
+  .action-row { flex-direction:column; align-items:stretch; }
+  .action-left,.action-right { display:grid; grid-template-columns:1fr; }
 }
 
 @media(max-width:400px) {
-  .dashboard-cards {
-    gap:8px;
-  }
-
-  .dash-card {
-    padding:12px;
-  }
-
-  .dash-card-value {
-    font-size:21px;
-  }
-
-  .dash-card-label {
-    font-size:10px;
-  }
-
-  .dash-card-icon {
-    width:34px;
-    height:34px;
-    font-size:16px;
-  }
+  .dashboard-cards { gap:8px; }
+  .dash-card { padding:12px; }
+  .dash-card-value { font-size:21px; }
+  .dash-card-label { font-size:10px; }
+  .dash-card-icon { width:34px; height:34px; font-size:16px; }
 }
 
 /* PRINT */
-
 @media print {
-  body {
-    padding:0;
-    background:white;
-  }
-
-  .header {
-    box-shadow:none;
-  }
-
-  .filter-panel,
-  .action-row,
-  .footer {
-    display:none !important;
-  }
-
-  .dash-card,
-  .dash-panel,
-  .table-panel {
+  body { padding:0; background:white; }
+  .header { box-shadow:none; }
+  .filter-panel,.action-row,.footer { display:none !important; }
+  .dash-card,.dash-panel,.table-panel {
     box-shadow:none;
     break-inside:avoid;
   }
-
-  .table-wrap {
-    overflow:visible;
-    max-height:none;
-  }
-
-  table {
-    min-width:0;
-    font-size:9px;
-  }
-
+  .table-wrap { overflow:visible; max-height:none; }
+  table { min-width:0; font-size:9px; }
   th,td {
     padding:6px 4px;
     font-size:9px;
@@ -700,7 +609,6 @@ td:nth-child(4) {
 <div class="wrap">
 
 <header class="header">
-
   <div class="brand">
     <div class="brand-icon">📋</div>
     <div>
@@ -718,16 +626,13 @@ td:nth-child(4) {
     </div>
     <div class="header-tag">ALL PARTS · DAILY REPORT</div>
   </div>
-
 </header>
 
 <!-- FILTER -->
 <section class="panel filter-panel">
-
   <div class="section-title">ค้นหาและกรองข้อมูล</div>
 
   <div class="filter-grid">
-
     <label class="field">
       ค้นหาข้อมูล
       <input id="search" type="search"
@@ -744,29 +649,19 @@ td:nth-child(4) {
       <input id="toDate" type="date">
     </label>
 
-    <button class="btn" id="filterBtn" type="button">
-      ⌕ ค้นหา
-    </button>
-
-    <button class="btn btn-gray" id="resetBtn" type="button">
-      ล้างตัวกรอง
-    </button>
-
+    <button class="btn" id="filterBtn" type="button">⌕ ค้นหา</button>
+    <button class="btn btn-gray" id="resetBtn" type="button">ล้างตัวกรอง</button>
   </div>
 </section>
 
 <!-- DASHBOARD -->
 <section class="dashboard-section">
-
   <div class="dashboard-title">
     <div>
       <h2>📊 Maintenance Dashboard</h2>
       <p>ภาพรวมผลการซ่อมบำรุงแม่พิมพ์ของแผนก Maintenance</p>
     </div>
-
-    <div class="dashboard-period" id="dashboardPeriod">
-      ข้อมูลทั้งหมด
-    </div>
+    <div class="dashboard-period" id="dashboardPeriod">ข้อมูลทั้งหมด</div>
   </div>
 
   <div class="dashboard-cards">
@@ -810,12 +705,9 @@ td:nth-child(4) {
   </div>
 
   <div class="dashboard-grid">
-
     <div class="dash-panel">
       <h3>📅 แนวโน้มงานซ่อมรายเดือน</h3>
-      <div class="dash-panel-sub">
-        จำนวนรายการซ่อมย้อนหลัง 6 เดือน
-      </div>
+      <div class="dash-panel-sub">จำนวนรายการซ่อมย้อนหลัง 6 เดือน</div>
       <div class="month-chart" id="monthlyChart">
         <div class="rank-empty">กำลังโหลดข้อมูล...</div>
       </div>
@@ -823,45 +715,34 @@ td:nth-child(4) {
 
     <div class="dash-panel">
       <h3>🏆 PART ที่มีการซ่อมมากที่สุด</h3>
-      <div class="dash-panel-sub">
-        5 อันดับ PART ที่มีรายการซ่อมสูงสุด
-      </div>
+      <div class="dash-panel-sub">5 อันดับ PART ที่มีรายการซ่อมสูงสุด</div>
       <div class="rank-list" id="topParts">
         <div class="rank-empty">กำลังโหลดข้อมูล...</div>
       </div>
     </div>
-
   </div>
 
   <div class="dash-panel">
     <h3>🔧 สาเหตุการซ่อมที่พบบ่อย</h3>
-    <div class="dash-panel-sub">
-      5 อันดับสาเหตุการซ่อมจากข้อมูลที่แสดง
-    </div>
+    <div class="dash-panel-sub">5 อันดับสาเหตุการซ่อมจากข้อมูลที่แสดง</div>
     <div class="rank-list" id="topCauses">
       <div class="rank-empty">กำลังโหลดข้อมูล...</div>
     </div>
   </div>
-
 </section>
 
 <!-- TABLE -->
 <section class="table-panel">
-
   <div class="table-heading">
     <div>
       <h2>รายการประวัติ Daily Report</h2>
       <p>ข้อมูลการซ่อมบำรุงทั้งหมดจากฐานข้อมูลส่วนกลาง</p>
     </div>
-
-    <div class="result-label" id="resultLabel">
-      0 รายการ
-    </div>
+    <div class="result-label" id="resultLabel">0 รายการ</div>
   </div>
 
   <div class="table-wrap">
     <table>
-
       <thead>
         <tr>
           <th>#</th>
@@ -879,44 +760,31 @@ td:nth-child(4) {
           <th>หมายเหตุ</th>
         </tr>
       </thead>
-
       <tbody id="historyBody">
         <tr>
-          <td colspan="13" class="empty">
-            กำลังโหลดข้อมูล...
-          </td>
+          <td colspan="13" class="empty">กำลังโหลดข้อมูล...</td>
         </tr>
       </tbody>
-
     </table>
   </div>
 
   <div class="panel" style="margin:0;border-radius:0;box-shadow:none;">
     <div class="action-row">
-
       <div class="action-left">
         <button class="btn btn-gray" id="refreshBtn" type="button">
           ↻ โหลดข้อมูลใหม่
         </button>
-
         <button class="btn btn-green" id="exportBtn" type="button">
-          ↓ ส่งออก CSV
+          ↓ ส่งออก Excel
         </button>
       </div>
 
       <div class="action-right">
-        <button class="btn" id="printBtn" type="button">
-          🖨 พิมพ์รายงาน
-        </button>
-
-        <button class="btn" id="backBtn" type="button">
-          + กลับไปหน้าบันทึก
-        </button>
+        <button class="btn" id="printBtn" type="button">🖨 พิมพ์รายงาน</button>
+        <button class="btn" id="backBtn" type="button">+ กลับไปหน้าบันทึก</button>
       </div>
-
     </div>
   </div>
-
 </section>
 
 <footer class="footer">
@@ -1027,9 +895,7 @@ function dateToISO(value) {
 
   let year = match[3];
 
-  if (year.length === 2) {
-    year = "20" + year;
-  }
+  if (year.length === 2) year = "20" + year;
 
   let day;
   let month;
@@ -1041,14 +907,11 @@ function dateToISO(value) {
     month = first;
     day = second;
   } else {
-    // รูปแบบวันที่ของระบบนี้ใช้ DD/MM/YY
     day = first;
     month = second;
   }
 
-  if (month < 1 || month > 12 || day < 1 || day > 31) {
-    return "";
-  }
+  if (month < 1 || month > 12 || day < 1 || day > 31) return "";
 
   return `${year}-${String(month).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
 }
@@ -1068,21 +931,17 @@ function getDurationMinutes(value) {
 
   const text = String(value).trim();
 
-  // ตัวเลขนาที เช่น 150
   if (/^\d+(?:\.\d+)?$/.test(text)) {
     const numeric = Number(text);
-    return Number.isFinite(numeric) && numeric >= 0
-      ? numeric
-      : null;
+    return Number.isFinite(numeric) && numeric >= 0 ? numeric : null;
   }
 
-  // ข้อมูลเก่า เช่น 2 ชม. 30 นาที
   const oldFormat = text.match(
     /(?:(\d+(?:\.\d+)?)\s*ชม\.?)?\s*(?:(\d+(?:\.\d+)?)\s*นาที)?/
   );
 
   if (oldFormat && (oldFormat[1] || oldFormat[2])) {
-    return (Number(oldFormat[1] || 0) * 60) +
+    return Number(oldFormat[1] || 0) * 60 +
       Number(oldFormat[2] || 0);
   }
 
@@ -1091,9 +950,7 @@ function getDurationMinutes(value) {
 
 function formatDuration(value) {
   const minutes = getDurationMinutes(value);
-
   if (minutes === null) return "--";
-
   return `${minutes.toLocaleString("th-TH")} นาที`;
 }
 
@@ -1158,7 +1015,7 @@ async function load() {
 }
 
 // ========================================
-// 7. DASHBOARD FUNCTIONS
+// 7. DASHBOARD
 // ========================================
 
 function countBy(records, field) {
@@ -1166,7 +1023,6 @@ function countBy(records, field) {
 
   records.forEach(record => {
     const raw = record[field];
-
     if (!raw) return;
 
     String(raw)
@@ -1178,34 +1034,28 @@ function countBy(records, field) {
       });
   });
 
-  return Object.entries(result)
-    .sort((a, b) => b[1] - a[1]);
+  return Object.entries(result).sort((a,b) => b[1]-a[1]);
 }
 
 function renderRankList(elementId, items) {
   const element = document.getElementById(elementId);
 
   if (!items.length) {
-    element.innerHTML =
-      '<div class="rank-empty">ยังไม่มีข้อมูล</div>';
+    element.innerHTML = '<div class="rank-empty">ยังไม่มีข้อมูล</div>';
     return;
   }
 
-  const top = items.slice(0, 5);
-  const max = Math.max(...top.map(item => item[1]), 1);
+  const top = items.slice(0,5);
+  const max = Math.max(...top.map(item => item[1]),1);
 
-  element.innerHTML = top.map(([name, value]) => {
-    const percent = Math.max(3, value / max * 100);
+  element.innerHTML = top.map(([name,value]) => {
+    const percent = Math.max(3,value/max*100);
 
     return `
       <div class="rank-item">
         <div class="rank-head">
-          <div class="rank-name" title="${safe(name)}">
-            ${safe(name)}
-          </div>
-          <div class="rank-number">
-            ${value.toLocaleString("th-TH")} รายการ
-          </div>
+          <div class="rank-name" title="${safe(name)}">${safe(name)}</div>
+          <div class="rank-number">${value.toLocaleString("th-TH")} รายการ</div>
         </div>
         <div class="rank-track">
           <div class="rank-fill" style="width:${percent}%"></div>
@@ -1218,58 +1068,41 @@ function renderRankList(elementId, items) {
 function renderMonthlyChart(records) {
   const element = document.getElementById("monthlyChart");
   const now = new Date();
-
   const months = [];
 
-  for (let i = 5; i >= 0; i--) {
-    const date = new Date(
-      now.getFullYear(),
-      now.getMonth() - i,
-      1
-    );
+  for (let i=5; i>=0; i--) {
+    const date = new Date(now.getFullYear(),now.getMonth()-i,1);
 
-    const key =
-      date.getFullYear() + "-" +
-      String(date.getMonth() + 1).padStart(2, "0");
+    const key = date.getFullYear() + "-" +
+      String(date.getMonth()+1).padStart(2,"0");
 
     months.push({
       key,
-      label: date.toLocaleDateString("th-TH", {
-        month: "short"
-      }),
-      count: 0
+      label:date.toLocaleDateString("th-TH",{month:"short"}),
+      count:0
     });
   }
 
   records.forEach(record => {
     const iso = dateToISO(recordDate(record));
-
     if (!iso) return;
 
-    const key = iso.slice(0, 7);
-    const month = months.find(m => m.key === key);
-
+    const month = months.find(m => m.key === iso.slice(0,7));
     if (month) month.count++;
   });
 
-  const max = Math.max(...months.map(m => m.count), 1);
+  const max = Math.max(...months.map(m=>m.count),1);
 
   element.innerHTML = months.map(month => {
     const height = month.count
-      ? Math.max(4, month.count / max * 100)
+      ? Math.max(4,month.count/max*100)
       : 0;
 
     return `
       <div class="month-column">
-        <div class="month-value">
-          ${month.count.toLocaleString("th-TH")}
-        </div>
+        <div class="month-value">${month.count.toLocaleString("th-TH")}</div>
         <div class="month-bar-area">
-          <div
-            class="month-bar"
-            style="height:${height}%"
-            title="${month.count} รายการ">
-          </div>
+          <div class="month-bar" style="height:${height}%" title="${month.count} รายการ"></div>
         </div>
         <div class="month-label">${month.label}</div>
       </div>
@@ -1278,24 +1111,22 @@ function renderMonthlyChart(records) {
 }
 
 function updateDashboard(records) {
-  const total = records.reduce((sum, record) => {
-    return sum + (getDurationMinutes(record.workDuration) ?? 0);
-  }, 0);
+  const total = records.reduce(
+    (sum,record) => sum + (getDurationMinutes(record.workDuration) ?? 0),
+    0
+  );
 
   const validDurations = records
     .map(record => getDurationMinutes(record.workDuration))
     .filter(value => value !== null);
 
-  const average = validDurations.length
-    ? total / validDurations.length
-    : 0;
+  const average = validDurations.length ? total/validDurations.length : 0;
 
   document.getElementById("count").textContent =
     records.length.toLocaleString("th-TH");
 
   document.getElementById("partCount").textContent =
-    new Set(records.map(r => r.partNo).filter(Boolean))
-      .size.toLocaleString("th-TH");
+    new Set(records.map(r=>r.partNo).filter(Boolean)).size.toLocaleString("th-TH");
 
   document.getElementById("totalDuration").textContent =
     total.toLocaleString("th-TH");
@@ -1309,31 +1140,17 @@ function updateDashboard(records) {
 
   let period = "ข้อมูลทั้งหมด";
 
-  if (from && to) {
-    period = `${formatDate(from)} - ${formatDate(to)}`;
-  } else if (from) {
-    period = `ตั้งแต่ ${formatDate(from)}`;
-  } else if (to) {
-    period = `ถึง ${formatDate(to)}`;
-  }
+  if (from && to) period = `${formatDate(from)} - ${formatDate(to)}`;
+  else if (from) period = `ตั้งแต่ ${formatDate(from)}`;
+  else if (to) period = `ถึง ${formatDate(to)}`;
 
-  if (search) {
-    period += " · ผลการค้นหา";
-  }
+  if (search) period += " · ผลการค้นหา";
 
   document.getElementById("dashboardPeriod").textContent = period;
 
   renderMonthlyChart(records);
-
-  renderRankList(
-    "topParts",
-    countBy(records, "partNo")
-  );
-
-  renderRankList(
-    "topCauses",
-    countBy(records, "causeRepair")
-  );
+  renderRankList("topParts",countBy(records,"partNo"));
+  renderRankList("topCauses",countBy(records,"causeRepair"));
 }
 
 // ========================================
@@ -1341,9 +1158,7 @@ function updateDashboard(records) {
 // ========================================
 
 function render() {
-  const q = document.getElementById("search")
-    .value.trim().toLowerCase();
-
+  const q = document.getElementById("search").value.trim().toLowerCase();
   const from = document.getElementById("fromDate").value;
   const to = document.getElementById("toDate").value;
 
@@ -1368,7 +1183,6 @@ function render() {
     );
   });
 
-  // อัปเดต Dashboard จากข้อมูลที่ผ่านตัวกรอง
   updateDashboard(visibleRecords);
 
   document.getElementById("resultLabel").textContent =
@@ -1380,9 +1194,9 @@ function render() {
     return;
   }
 
-  body.innerHTML = visibleRecords.map((r, i) => `
+  body.innerHTML = visibleRecords.map((r,i) => `
     <tr>
-      <td>${i + 1}</td>
+      <td>${i+1}</td>
       <td>${safe(formatDate(recordDate(r)))}</td>
       <td>${safe(r.customer)}</td>
       <td>${safe(r.partNo)}</td>
@@ -1403,124 +1217,165 @@ function render() {
 // 9. FILTER EVENTS
 // ========================================
 
-document.getElementById("filterBtn")
-  .addEventListener("click", render);
-
-document.getElementById("search")
-  .addEventListener("input", render);
-
-document.getElementById("fromDate")
-  .addEventListener("change", render);
-
-document.getElementById("toDate")
-  .addEventListener("change", render);
+document.getElementById("filterBtn").addEventListener("click",render);
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("fromDate").addEventListener("change",render);
+document.getElementById("toDate").addEventListener("change",render);
 
 // ========================================
 // 10. RESET FILTER
 // ========================================
 
-document.getElementById("resetBtn")
-  .addEventListener("click", () => {
-    document.getElementById("search").value = "";
-    document.getElementById("fromDate").value = "";
-    document.getElementById("toDate").value = "";
-    render();
-  });
+document.getElementById("resetBtn").addEventListener("click",() => {
+  document.getElementById("search").value = "";
+  document.getElementById("fromDate").value = "";
+  document.getElementById("toDate").value = "";
+  render();
+});
 
 // ========================================
 // 11. REFRESH
 // ========================================
 
-document.getElementById("refreshBtn")
-  .addEventListener("click", load);
+document.getElementById("refreshBtn").addEventListener("click",load);
 
 // ========================================
 // 12. BACK TO DAILY REPORT
 // ========================================
 
-document.getElementById("backBtn")
-  .addEventListener("click", () => {
-    location.href = "daily-report.html";
-  });
+document.getElementById("backBtn").addEventListener("click",() => {
+  location.href = "daily-report.html";
+});
 
 // ========================================
 // 13. PRINT
 // ========================================
 
-document.getElementById("printBtn")
-  .addEventListener("click", () => {
-    window.print();
-  });
+document.getElementById("printBtn").addEventListener("click",() => {
+  window.print();
+});
 
 // ========================================
-// 14. EXPORT CSV
+// 14. EXPORT EXCEL (.xlsx)
 // ========================================
 
-function csvCell(value) {
-  return '"' + String(value ?? "").replace(/"/g, '""') + '"';
-}
+document.getElementById("exportBtn").addEventListener("click",() => {
 
-document.getElementById("exportBtn")
-  .addEventListener("click", () => {
+  if (!visibleRecords.length) {
+    alert("ไม่มีข้อมูลสำหรับส่งออก");
+    return;
+  }
 
-    if (!visibleRecords.length) {
-      alert("ไม่มีข้อมูลสำหรับส่งออก");
-      return;
-    }
+  if (typeof XLSX === "undefined") {
+    alert("โหลดระบบ Excel ไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต");
+    return;
+  }
 
-    const headers = [
-      "วันที่",
-      "ลูกค้า",
-      "Part No.",
-      "Process",
-      "สาเหตุการซ่อม",
-      "สาเหตุปัญหา",
-      "รายละเอียดการซ่อม",
-      "ผู้ซ่อม",
-      "เวลาเริ่ม",
-      "เวลาเสร็จ",
-      "รวมเวลา (นาที)",
-      "หมายเหตุ"
+  const btn = document.getElementById("exportBtn");
+
+  try {
+    btn.disabled = true;
+    btn.textContent = "กำลังสร้าง Excel...";
+
+    // รายละเอียด Daily Report
+    const rows = visibleRecords.map((r,i) => ({
+      "ลำดับ":i+1,
+      "วันที่":formatDate(recordDate(r)),
+      "ลูกค้า":r.customer || "",
+      "Part No.":r.partNo || "",
+      "Process":r.process || "",
+      "สาเหตุการซ่อม":r.causeRepair || "",
+      "สาเหตุปัญหา":r.causeProblem || "",
+      "รายละเอียดการซ่อม":r.repairDetail || "",
+      "ผู้ซ่อม":r.repairedBy || "",
+      "เวลาเริ่ม":r.startTime || "",
+      "เวลาเสร็จ":r.endTime || "",
+      "รวมเวลา (นาที)":getDurationMinutes(r.workDuration) ?? "",
+      "หมายเหตุ":r.remarks || ""
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+
+    worksheet["!cols"] = [
+      {wch:8},
+      {wch:14},
+      {wch:18},
+      {wch:18},
+      {wch:16},
+      {wch:22},
+      {wch:25},
+      {wch:40},
+      {wch:20},
+      {wch:13},
+      {wch:13},
+      {wch:18},
+      {wch:35}
     ];
 
-    const rows = [
-      headers,
-      ...visibleRecords.map(r => [
-        formatDate(recordDate(r)),
-        r.customer,
-        r.partNo,
-        r.process,
-        r.causeRepair,
-        r.causeProblem,
-        r.repairDetail,
-        r.repairedBy,
-        r.startTime,
-        r.endTime,
-        getDurationMinutes(r.workDuration) ?? "",
-        r.remarks
-      ])
+    // สรุป Summary
+    const totalMinutes = visibleRecords.reduce(
+      (sum,r) => sum + (getDurationMinutes(r.workDuration) ?? 0),
+      0
+    );
+
+    const validDurations = visibleRecords
+      .map(r => getDurationMinutes(r.workDuration))
+      .filter(v => v !== null);
+
+    const averageMinutes = validDurations.length
+      ? Math.round(totalMinutes/validDurations.length)
+      : 0;
+
+    const summaryData = [
+      ["TNC - DIE MAINTENANCE DAILY REPORT"],
+      ["สรุปผลการซ่อมบำรุง"],
+      [""],
+      ["รายการ","ข้อมูล"],
+      ["จำนวนรายการซ่อม",visibleRecords.length],
+      ["จำนวน PART",new Set(visibleRecords.map(r=>r.partNo).filter(Boolean)).size],
+      ["เวลาซ่อมรวม (นาที)",totalMinutes],
+      ["เวลาเฉลี่ย (นาที)",averageMinutes],
+      ["วันที่ส่งออก",new Date().toLocaleDateString("th-TH")],
+      ["ช่วงข้อมูล",document.getElementById("dashboardPeriod").textContent]
     ];
 
-    const csv = "\uFEFF" +
-      rows.map(row => row.map(csvCell).join(",")).join("\r\n");
+    const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
 
-    const blob = new Blob([csv], {
-      type:"text/csv;charset=utf-8;"
-    });
+    summarySheet["!cols"] = [
+      {wch:30},
+      {wch:40}
+    ];
 
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const workbook = XLSX.utils.book_new();
 
-    a.href = url;
-    a.download =
-      `TNC_Daily_Report_All_PART_${new Date().toISOString().slice(0,10)}.csv`;
+    XLSX.utils.book_append_sheet(
+      workbook,
+      worksheet,
+      "Daily Report"
+    );
 
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    XLSX.utils.book_append_sheet(
+      workbook,
+      summarySheet,
+      "Summary"
+    );
 
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  });
+    const today = new Date().toISOString().slice(0,10);
+
+    XLSX.writeFile(
+      workbook,
+      `TNC_Daily_Report_${today}.xlsx`
+    );
+
+  } catch (error) {
+    console.error("Excel export error:",error);
+    alert("สร้างไฟล์ Excel ไม่สำเร็จ: " + error.message);
+
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "↓ ส่งออก Excel";
+  }
+});
 
 // ========================================
 // 15. START
