@@ -704,6 +704,7 @@ body.dark .duration{background:#183e32;color:#7ee0b0}
 
 </div>
 
+
 <script>
 "use strict";
 
@@ -732,14 +733,19 @@ const urlParams = new URLSearchParams(location.search);
 const partCode = (urlParams.get("part") || "P181595028").trim();
 
 let PART_INFO = null;
+let isSubmitting = false;
+let autoSaveTimer = null;
+let lastDraftSnapshot = "";
 
 const tbody = document.getElementById("tableBody");
 const dateInput = document.getElementById("reportDate");
-
 const draftKey = "tnc_daily_report_draft_" + partCode;
+const submittedKey = "tnc_daily_report_submitted_" + partCode;
+
+dateInput.value = localDateText();
 
 // ========================================
-// 3. TOAST NOTIFICATION
+// 3. TOAST
 // ========================================
 
 function notify(title, message, type = "success") {
@@ -770,8 +776,7 @@ function notify(title, message, type = "success") {
   content.append(heading, detail);
   toast.append(icon, content);
 
-  const container = document.getElementById("toastContainer");
-  container.appendChild(toast);
+  document.getElementById("toastContainer").appendChild(toast);
 
   setTimeout(() => {
     toast.style.opacity = "0";
@@ -786,14 +791,13 @@ function notify(title, message, type = "success") {
 
 function localDateText() {
   const d = new Date();
+
   return [
     String(d.getDate()).padStart(2,"0"),
     String(d.getMonth()+1).padStart(2,"0"),
     String(d.getFullYear()).slice(-2)
   ].join("/");
 }
-
-dateInput.value = localDateText();
 
 // ========================================
 // 5. HTML ESCAPE
@@ -820,8 +824,13 @@ async function loadPartInfo() {
     .eq("part_no", partCode)
     .maybeSingle();
 
-  if (error) throw new Error("โหลดข้อมูล PART ไม่สำเร็จ: " + error.message);
-  if (!data) throw new Error("ไม่พบ PART No. " + partCode + " ใน part_database");
+  if (error) {
+    throw new Error("โหลดข้อมูล PART ไม่สำเร็จ: " + error.message);
+  }
+
+  if (!data) {
+    throw new Error("ไม่พบ PART No. " + partCode + " ใน part_database");
+  }
 
   PART_INFO = {
     customer:data.customer || "",
@@ -831,7 +840,9 @@ async function loadPartInfo() {
   };
 
   const display = document.getElementById("partInfoDisplay");
+
   display.hidden = false;
+
   display.textContent =
     `PART: ${PART_INFO.partNo}` +
     (PART_INFO.partName ? ` · ${PART_INFO.partName}` : "") +
@@ -849,11 +860,13 @@ const options = {
     "เปลี่ยนเม็ด+ตัด","เปลี่ยนเม็ด+ล้าง",
     "ล้างแม่พิมพ์","ปรับระดับ","อื่นๆ"
   ],
+
   problem:[
     "Punch แตก","Punch เบี้ย","เม็ดสึกหรอ",
     "น้ำมันรั่ว","สิ่งสกปรก","รอยขีดข่วน",
     "ไม่มี","อื่นๆ"
   ],
+
   detail:[
     "เปลี่ยนของใหม่","ถอดล้าง+ปรับระดับ",
     "เปลี่ยนเม็ด","ล้างทำความสะอาด",
@@ -899,9 +912,11 @@ function addRow(data = {}) {
     <td><input class="customer" type="text" readonly></td>
     <td><input class="part-no" type="text" readonly></td>
     <td><input class="process" type="text" readonly></td>
+
     <td>${checkboxGroupHTML("cause-repair",options.repair)}</td>
     <td>${checkboxGroupHTML("cause-problem",options.problem)}</td>
     <td>${checkboxGroupHTML("repair-detail",options.detail)}</td>
+
     <td><input class="repaired-by" type="text" placeholder="ชื่อผู้ซ่อม"></td>
     <td><input class="time-start time" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM"></td>
     <td><input class="time-end time" type="text" inputmode="numeric" maxlength="5" placeholder="HH:MM"></td>
@@ -920,7 +935,9 @@ function addRow(data = {}) {
   };
 
   Object.entries(fields).forEach(([selector,value]) => {
-    if (value != null) tr.querySelector(selector).value = value;
+    if (value != null) {
+      tr.querySelector(selector).value = value;
+    }
   });
 
   restoreCheckboxes(tr,"cause-repair",data.causeRepair);
@@ -943,7 +960,9 @@ function restoreCheckboxes(row, cls, value) {
     : String(value).split(",").map(x => x.trim());
 
   row.querySelectorAll(`.${cls} input[type="checkbox"]`)
-    .forEach(chk => chk.checked = selected.includes(chk.value));
+    .forEach(chk => {
+      chk.checked = selected.includes(chk.value);
+    });
 }
 
 // ========================================
@@ -1032,6 +1051,7 @@ function getRecords() {
       workDuration:duration === null ? "" : String(duration),
       remarks:get(".remark")
     };
+
   }).filter(r => Boolean(
     r.causeRepair || r.causeProblem || r.repairDetail ||
     r.repairedBy || r.startTime || r.endTime || r.remarks
@@ -1044,23 +1064,27 @@ function getRecords() {
 
 function updateDashboard() {
   const rows = [...tbody.querySelectorAll(".data-row")];
-
   const records = getRecords();
+
   const durations = records
     .map(r => r.workDuration)
     .filter(v => v !== "")
     .map(Number);
 
   const total = durations.reduce((sum,n) => sum+n,0);
+
   const average = durations.length
     ? Math.round(total/durations.length)
     : 0;
 
   document.getElementById("statJobs").textContent = records.length;
-  document.getElementById("statTotal").textContent = total.toLocaleString("th-TH");
-  document.getElementById("statAverage").textContent = average.toLocaleString("th-TH");
 
-  // ความครบถ้วน: ผู้ซ่อม + สาเหตุ + รายละเอียด + เวลาเริ่ม + เวลาเสร็จ
+  document.getElementById("statTotal").textContent =
+    total.toLocaleString("th-TH");
+
+  document.getElementById("statAverage").textContent =
+    average.toLocaleString("th-TH");
+
   let completed = 0;
   let possible = 0;
 
@@ -1078,7 +1102,9 @@ function updateDashboard() {
     completed += checks.filter(Boolean).length;
   });
 
-  const percent = possible ? Math.round(completed/possible*100) : 0;
+  const percent = possible
+    ? Math.round(completed/possible*100)
+    : 0;
 
   document.getElementById("progressPercent").textContent = percent + "%";
   document.getElementById("progressFill").style.width = percent + "%";
@@ -1088,15 +1114,13 @@ function updateDashboard() {
 }
 
 // ========================================
-// 17. AUTOSAVE LOCAL DRAFT
+// 17. AUTOSAVE
 // ========================================
-
-let autoSaveTimer = null;
-let lastDraftSnapshot = "";
 
 function getDraft() {
   return {
     date:dateInput.value,
+
     rows:[...tbody.querySelectorAll(".data-row")].map(row => ({
       repairedBy:row.querySelector(".repaired-by").value,
       startTime:row.querySelector(".time-start").value,
@@ -1110,7 +1134,8 @@ function getDraft() {
 }
 
 function saveDraft() {
-  if (!PART_INFO) return;
+  // ห้ามบันทึก Draft ระหว่างส่งข้อมูลหรือหลังบันทึกสำเร็จ
+  if (!PART_INFO || isSubmitting) return;
 
   try {
     const draft = getDraft();
@@ -1123,19 +1148,26 @@ function saveDraft() {
 
     document.getElementById("saveStatus").textContent =
       "บันทึกฉบับร่างล่าสุด " +
-      new Date().toLocaleTimeString("th-TH",{hour:"2-digit",minute:"2-digit"});
+      new Date().toLocaleTimeString("th-TH",{
+        hour:"2-digit",
+        minute:"2-digit"
+      });
 
   } catch(error) {
     console.error("Draft save error:",error);
+
     document.getElementById("saveStatus").textContent =
       "ไม่สามารถบันทึกฉบับร่างในเบราว์เซอร์ได้";
   }
 }
 
 function scheduleDraftSave() {
+  if (isSubmitting) return;
+
   clearTimeout(autoSaveTimer);
 
-  document.getElementById("saveStatus").textContent = "กำลังบันทึกฉบับร่าง...";
+  document.getElementById("saveStatus").textContent =
+    "กำลังบันทึกฉบับร่าง...";
 
   autoSaveTimer = setTimeout(saveDraft,500);
 }
@@ -1143,6 +1175,7 @@ function scheduleDraftSave() {
 function restoreDraft() {
   try {
     const raw = localStorage.getItem(draftKey);
+
     if (!raw) return false;
 
     const draft = JSON.parse(raw);
@@ -1150,6 +1183,7 @@ function restoreDraft() {
     if (!draft || !Array.isArray(draft.rows)) return false;
 
     dateInput.value = draft.date || localDateText();
+
     tbody.innerHTML = "";
 
     draft.rows.forEach(row => addRow(row));
@@ -1170,7 +1204,58 @@ function restoreDraft() {
 }
 
 // ========================================
-// 18. LOAD TODAY SAVED COUNT
+// 18. CLEAR DRAFT AFTER SUCCESS
+// ========================================
+
+function clearSubmittedDraft() {
+  clearTimeout(autoSaveTimer);
+
+  localStorage.removeItem(draftKey);
+
+  // จำไว้ว่ารายงานนี้ถูกส่งแล้ว
+  // ใช้ตรวจสอบเมื่อผู้ใช้กดปุ่มย้อนกลับ
+  sessionStorage.setItem(submittedKey,"1");
+
+  lastDraftSnapshot = "";
+}
+
+// ========================================
+// 19. RESET FORM AFTER RETURN
+// ========================================
+
+function resetFormAfterSubmitted() {
+  clearTimeout(autoSaveTimer);
+
+  localStorage.removeItem(draftKey);
+
+  isSubmitting = false;
+
+  dateInput.value = localDateText();
+
+  tbody.innerHTML = "";
+
+  if (PART_INFO) {
+    addRow();
+  }
+
+  updateDashboard();
+
+  lastDraftSnapshot = JSON.stringify(getDraft());
+
+  document.getElementById("saveStatus").textContent =
+    "พร้อมเริ่มบันทึกรายการใหม่";
+
+  loadTodaySummary();
+
+  notify(
+    "เริ่มรายการใหม่แล้ว",
+    "ข้อมูลที่ส่งไปก่อนหน้านี้ถูกบันทึกแล้ว ฟอร์มพร้อมใช้งาน",
+    "success"
+  );
+}
+
+// ========================================
+// 20. LOAD TODAY SAVED COUNT
 // ========================================
 
 async function loadTodaySummary() {
@@ -1189,15 +1274,18 @@ async function loadTodaySummary() {
 
   } catch(error) {
     console.error("Today summary error:",error);
+
     document.getElementById("statSaved").textContent = "-";
   }
 }
 
 // ========================================
-// 19. INPUT EVENTS
+// 21. INPUT EVENTS
 // ========================================
 
 tbody.addEventListener("input",e => {
+  if (isSubmitting) return;
+
   if (e.target.matches(".time-start,.time-end")) {
     const el = e.target;
     const digits = el.value.replace(/[^0-9]/g,"").slice(0,4);
@@ -1214,20 +1302,26 @@ tbody.addEventListener("input",e => {
 });
 
 tbody.addEventListener("change",() => {
+  if (isSubmitting) return;
+
   updateDashboard();
   scheduleDraftSave();
 });
 
 dateInput.addEventListener("input",() => {
+  if (isSubmitting) return;
+
   updateDashboard();
   scheduleDraftSave();
 });
 
 // ========================================
-// 20. SAVE TO SUPABASE
+// 22. SAVE TO SUPABASE
 // ========================================
 
 async function saveData() {
+  if (isSubmitting) return;
+
   const rows = [...tbody.querySelectorAll(".data-row")];
 
   const invalidTime = rows.find(row => {
@@ -1239,25 +1333,38 @@ async function saveData() {
   });
 
   if (invalidTime) {
-    notify("เวลาไม่ถูกต้อง","กรุณากรอกเวลาแบบ HH:MM เช่น 08:30","error");
+    notify(
+      "เวลาไม่ถูกต้อง",
+      "กรุณากรอกเวลาแบบ HH:MM เช่น 08:30",
+      "error"
+    );
     return;
   }
 
   const incompleteTime = rows.find(row => {
     const start = row.querySelector(".time-start").value.trim();
     const end = row.querySelector(".time-end").value.trim();
+
     return Boolean(start) !== Boolean(end);
   });
 
   if (incompleteTime) {
-    notify("ข้อมูลเวลาไม่ครบ","กรุณากรอกเวลาเริ่มและเวลาเสร็จให้ครบคู่","warning");
+    notify(
+      "ข้อมูลเวลาไม่ครบ",
+      "กรุณากรอกเวลาเริ่มและเวลาเสร็จให้ครบคู่",
+      "warning"
+    );
     return;
   }
 
   const records = getRecords();
 
   if (!records.length) {
-    notify("ยังไม่มีข้อมูล","กรุณากรอกรายการซ่อมก่อนบันทึก","warning");
+    notify(
+      "ยังไม่มีข้อมูล",
+      "กรุณากรอกรายการซ่อมก่อนบันทึก",
+      "warning"
+    );
     return;
   }
 
@@ -1288,10 +1395,19 @@ async function saveData() {
 
     if (error) throw error;
 
-    localStorage.removeItem(draftKey);
-    lastDraftSnapshot = "";
+    // สำคัญ: ล็อกการบันทึกฉบับร่างทันที
+    isSubmitting = true;
 
-    notify("บันทึกสำเร็จ",`บันทึกข้อมูล ${records.length} รายการเรียบร้อยแล้ว`,"success");
+    // หยุด Timer และลบ Draft เก่า
+    clearSubmittedDraft();
+
+    saveBtn.textContent = "✓ บันทึกสำเร็จ";
+
+    notify(
+      "บันทึกสำเร็จ",
+      `บันทึกข้อมูล ${records.length} รายการเรียบร้อยแล้ว`,
+      "success"
+    );
 
     await loadTodaySummary();
 
@@ -1301,6 +1417,9 @@ async function saveData() {
 
   } catch(error) {
     console.error("Save error:",error);
+
+    isSubmitting = false;
+
     notify("บันทึกไม่สำเร็จ",error.message,"error");
 
     saveBtn.disabled = false;
@@ -1309,26 +1428,40 @@ async function saveData() {
 }
 
 // ========================================
-// 21. CLEAR FORM
+// 23. CLEAR FORM
 // ========================================
 
 function clearForm() {
-  if (!confirm("ต้องการล้างข้อมูลทั้งหมดในฟอร์มใช่หรือไม่?")) return;
+  if (isSubmitting) return;
+
+  if (!confirm("ต้องการล้างข้อมูลทั้งหมดในฟอร์มใช่หรือไม่?")) {
+    return;
+  }
+
+  clearTimeout(autoSaveTimer);
 
   tbody.innerHTML = "";
+
   addRow();
 
   localStorage.removeItem(draftKey);
-  lastDraftSnapshot = "";
+
+  lastDraftSnapshot = JSON.stringify(getDraft());
 
   updateDashboard();
-  scheduleDraftSave();
 
-  notify("ล้างฟอร์มแล้ว","เริ่มกรอกรายการใหม่ได้เลย","success");
+  document.getElementById("saveStatus").textContent =
+    "ล้างข้อมูลแล้ว พร้อมเริ่มรายการใหม่";
+
+  notify(
+    "ล้างฟอร์มแล้ว",
+    "เริ่มกรอกรายการใหม่ได้เลย",
+    "success"
+  );
 }
 
 // ========================================
-// 22. DARK MODE
+// 24. DARK MODE
 // ========================================
 
 function setTheme(dark) {
@@ -1337,10 +1470,14 @@ function setTheme(dark) {
   document.getElementById("themeBtn").textContent =
     dark ? "☀ Light Mode" : "🌙 Dark Mode";
 
-  localStorage.setItem("tnc_daily_report_theme",dark ? "dark" : "light");
+  localStorage.setItem(
+    "tnc_daily_report_theme",
+    dark ? "dark" : "light"
+  );
 }
 
 const savedTheme = localStorage.getItem("tnc_daily_report_theme");
+
 setTheme(savedTheme === "dark");
 
 document.getElementById("themeBtn").addEventListener("click",() => {
@@ -1349,7 +1486,7 @@ document.getElementById("themeBtn").addEventListener("click",() => {
 });
 
 // ========================================
-// 23. PRINT
+// 25. PRINT
 // ========================================
 
 document.getElementById("printBtn").addEventListener("click",() => {
@@ -1358,10 +1495,12 @@ document.getElementById("printBtn").addEventListener("click",() => {
 });
 
 // ========================================
-// 24. BUTTONS
+// 26. BUTTONS
 // ========================================
 
 document.getElementById("addRowBtn").addEventListener("click",() => {
+  if (isSubmitting) return;
+
   addRow();
   updateDashboard();
   scheduleDraftSave();
@@ -1376,38 +1515,92 @@ document.getElementById("historyBtn").addEventListener("click",() => {
 document.getElementById("clearBtn").addEventListener("click",clearForm);
 
 // ========================================
-// 25. WARN BEFORE LEAVING
+// 27. BEFORE UNLOAD
 // ========================================
 
 window.addEventListener("beforeunload",e => {
+  // ถ้าบันทึกสำเร็จแล้ว ห้ามบันทึก Draft เก่ากลับ
+  if (isSubmitting) return;
+
   const records = getRecords();
 
   if (records.length) {
     saveDraft();
+
     e.preventDefault();
     e.returnValue = "";
   }
 });
 
 // ========================================
-// 26. INIT
+// 28. HANDLE BACK BUTTON / BFCACHE
+// ========================================
+
+window.addEventListener("pageshow",event => {
+  // เมื่อย้อนกลับจาก history และเบราว์เซอร์คืนหน้าเดิม
+  if (event.persisted && sessionStorage.getItem(submittedKey) === "1") {
+    sessionStorage.removeItem(submittedKey);
+
+    resetFormAfterSubmitted();
+  }
+});
+
+// ========================================
+// 29. INIT
 // ========================================
 
 async function init() {
   try {
     await loadPartInfo();
 
-    const restored = restoreDraft();
+    // ตรวจสอบว่าก่อนหน้านี้ส่งรายงานสำเร็จแล้วหรือไม่
+    const wasSubmitted = sessionStorage.getItem(submittedKey) === "1";
 
-    if (!restored) addRow();
+    if (wasSubmitted) {
+      sessionStorage.removeItem(submittedKey);
+      localStorage.removeItem(draftKey);
+
+      tbody.innerHTML = "";
+      addRow();
+
+      dateInput.value = localDateText();
+
+      lastDraftSnapshot = JSON.stringify(getDraft());
+
+      document.getElementById("saveStatus").textContent =
+        "พร้อมเริ่มบันทึกรายการใหม่";
+
+    } else {
+      const restored = restoreDraft();
+
+      if (!restored) {
+        addRow();
+        lastDraftSnapshot = JSON.stringify(getDraft());
+      }
+
+      if (restored) {
+        notify(
+          "กู้คืนข้อมูลแล้ว",
+          "พบฉบับร่างที่บันทึกไว้ในเครื่องนี้",
+          "success"
+        );
+      }
+    }
 
     updateDashboard();
+
     await loadTodaySummary();
 
-    if (restored) {
-      notify("กู้คืนข้อมูลแล้ว","พบฉบับร่างที่บันทึกไว้ในเครื่องนี้","success");
-    } else {
-      notify("พร้อมใช้งาน","โหลดข้อมูล PART เรียบร้อยแล้ว","success");
+    if (!wasSubmitted) {
+      const hasDraft = localStorage.getItem(draftKey);
+
+      if (!hasDraft) {
+        notify(
+          "พร้อมใช้งาน",
+          "โหลดข้อมูล PART เรียบร้อยแล้ว",
+          "success"
+        );
+      }
     }
 
   } catch(error) {
