@@ -25,6 +25,11 @@ body{
 }
 h1{font-size:22px;margin:0 0 5px;color:var(--navy)}
 .sub{font-size:14px;color:#667788}
+.part-label{
+  display:inline-block;margin-top:10px;padding:7px 12px;
+  background:#e8f3fc;color:#1765a0;border-radius:7px;
+  font-size:13px;font-weight:bold
+}
 .tools{
   display:flex;gap:10px;flex-wrap:wrap;
   margin-top:15px;align-items:end
@@ -75,7 +80,11 @@ tbody tr:nth-child(even){background:#f8fafc}
 
 <header class="header">
   <h1>ประวัติ Die Maintenance Daily Report</h1>
-  <div class="sub">TNC · ประวัติส่วนกลางของแผนก Maintenance</div>
+  <div class="sub" id="pageSubtitle">
+    TNC · ประวัติส่วนกลางของแผนก Maintenance
+  </div>
+
+  <div id="partLabel" class="part-label" hidden></div>
 
   <div class="tools">
     <label class="field">
@@ -178,6 +187,33 @@ const body = document.getElementById("historyBody");
 let allRecords = [];
 let visibleRecords = [];
 
+// อ่าน PART จาก URL เช่น ?part=P181595028
+let activePartCode =
+  new URLSearchParams(location.search).get("part")?.trim() || "";
+
+// แสดง PART ที่กำลังค้นหา
+function updatePartDisplay() {
+  const subtitle = document.getElementById("pageSubtitle");
+  const label = document.getElementById("partLabel");
+
+  if (activePartCode) {
+    subtitle.textContent =
+      "TNC · ประวัติรายงานแยกตาม PART";
+
+    label.textContent =
+      "กำลังแสดงประวัติ PART: " + activePartCode;
+
+    label.hidden = false;
+  } else {
+    subtitle.textContent =
+      "TNC · ประวัติส่วนกลางของแผนก Maintenance";
+
+    label.hidden = true;
+  }
+}
+
+updatePartDisplay();
+
 // ========================================
 // 3. ป้องกัน HTML
 // ========================================
@@ -230,7 +266,6 @@ async function load() {
 
   try {
 
-    // ตรวจสอบ URL และ Key
     if (
       !SUPABASE_URL ||
       !SUPABASE_ANON_KEY ||
@@ -242,9 +277,17 @@ async function load() {
       );
     }
 
-    const { data, error } = await supabaseClient
+    // สร้างคำสั่งค้นหาจากตาราง daily_reports
+    let request = supabaseClient
       .from("daily_reports")
-      .select("*")
+      .select("*");
+
+    // ถ้ามี PART ใน URL ให้กรองจากฐานข้อมูลโดยตรง
+    if (activePartCode) {
+      request = request.eq("part_no", activePartCode);
+    }
+
+    const { data, error } = await request
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -377,35 +420,58 @@ document.getElementById("fromDate")
 document.getElementById("toDate")
   .addEventListener("change", render);
 
+// ========================================
+// 8. ล้างตัวกรอง
+// ========================================
+
 document.getElementById("resetBtn")
-  .addEventListener("click", () => {
+  .addEventListener("click", async () => {
 
-    ["search", "fromDate", "toDate"].forEach(id => {
-      document.getElementById(id).value = "";
-    });
+    document.getElementById("search").value = "";
+    document.getElementById("fromDate").value = "";
+    document.getElementById("toDate").value = "";
 
-    render();
+    // ล้าง PART ที่อ่านจาก URL
+    activePartCode = "";
+
+    // ลบ query string ออกจาก URL
+    history.replaceState(
+      null,
+      "",
+      location.pathname
+    );
+
+    updatePartDisplay();
+
+    // โหลดประวัติทั้งหมดใหม่
+    await load();
 
   });
 
 // ========================================
-// 8. โหลดข้อมูลใหม่
+// 9. โหลดข้อมูลใหม่
 // ========================================
 
 document.getElementById("refreshBtn")
   .addEventListener("click", load);
 
 // ========================================
-// 9. กลับหน้าบันทึก
+// 10. กลับหน้าบันทึก
 // ========================================
 
 document.getElementById("backBtn")
   .addEventListener("click", () => {
-    location.href = "daily-report.html";
+
+    const target = activePartCode
+      ? "daily-report.html?part=" + encodeURIComponent(activePartCode)
+      : "daily-report.html";
+
+    location.href = target;
+
   });
 
 // ========================================
-// 10. ส่งออก CSV
+// 11. ส่งออก CSV
 // ========================================
 
 function csvCell(value) {
@@ -482,8 +548,13 @@ document.getElementById("exportBtn")
     const a = document.createElement("a");
 
     a.href = url;
+
+    const filePart = activePartCode
+      ? "_" + activePartCode.replace(/[^a-zA-Z0-9_-]/g, "_")
+      : "";
+
     a.download =
-      `TNC_Daily_Report_${new Date().toISOString().slice(0,10)}.csv`;
+      `TNC_Daily_Report${filePart}_${new Date().toISOString().slice(0,10)}.csv`;
 
     document.body.appendChild(a);
     a.click();
@@ -494,7 +565,7 @@ document.getElementById("exportBtn")
   });
 
 // ========================================
-// 11. เริ่มต้นระบบ
+// 12. เริ่มต้นระบบ
 // ========================================
 
 load();
